@@ -26,7 +26,7 @@ def load_plugin(mod_name: str) -> dict:
         base_dir = '\\'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[
                              0:-1]) + "\\" + PLUGIN_DIR + "\\" + mod_name
 
-    if sys.platform == "darwin":
+    if sys.platform in ["darwin", "linux", "unix"]:
         base_dir = '/'.join(os.path.dirname(__file__).split("/")[0:-1]) + "/" + PLUGIN_DIR + "/" + mod_name
 
     output.debug(f"Reading plugin dir: {base_dir}")
