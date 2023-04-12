@@ -4,7 +4,6 @@ from textwrap import fill
 import colorama
 import colorlog
 from colorama import Fore
-from modules.adi_lib.common.log import logger
 
 __doc__ = """
 日志记录, 输出到控制台和文件. BaseScreen为基类, Output类继承该类并重写
@@ -61,19 +60,15 @@ class BaseScreen:
 
     def info(self, string):
         self.screenLogger.info(f"{self.prefix_info} {string}")
-        # logger.info(string)
 
     def success(self, string):
         self.screenLogger.info(f"{self.prefix_success} {string}")
-        logger.info(string)
 
     def error(self, string):
         self.screenLogger.error(f"{self.prefix_error} {string}")
-        logger.error(string)
 
     def debug(self, string):
         self.screenLogger.debug(f"{self.prefix_debug} {string}")
-        logger.debug(string)
 
     def open_debug(self):
         self.screenLogger.setLevel(logging.DEBUG)
@@ -114,10 +109,11 @@ class Output(BaseScreen):
 
                 # 将结果转化为str
                 result_value = ""
-                for ins in v["results"]["data"]["instance_list"]:
-                    for k, val in ins.items():
-                        # TODO 将结果加到HTML报告, xray html 模板
-                        result_value += f"{k}: {str(val)}\n"
+                if status != "Failed":
+                    for ins in v["results"]["data"]["instance_list"]:
+                        for k, val in ins.items():
+                            # TODO 将结果加到HTML报告, xray html 模板
+                            result_value += f"{k}: {str(val)}\n"
 
                 # 添加攻击链节点
                 if status == "Success":
@@ -135,7 +131,7 @@ class Output(BaseScreen):
 
         # 打印表格 TODO 删除表格边框
         output.success(f"script results{output.RESET}\n"
-                    f"{result_table}\n")
+                       f"{result_table}\n")
 
         # TODO 打印结果路径
 

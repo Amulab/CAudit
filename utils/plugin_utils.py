@@ -135,7 +135,14 @@ def filter_user_plugin(all_plugins: dict, user_args, select_plugin) -> list[Plug
     execute_plugins = []
     for n, p in all_plugins.items():
         if user_args.scan_type == AllPluginTypes.Scan and user_args.scan_type == p.p_type:
-            execute_plugins.append(p)
+            if user_args.all:
+                # scan --all
+                execute_plugins.append(p)
+            elif user_args.plugins and p.alias in user_args.plugins:
+                # scan --plugins
+                execute_plugins.append(p)
         elif user_args.scan_type == AllPluginTypes.Exploit and p.alias == select_plugin:
+            # exploit [exp_plugin]
             execute_plugins.append(p)
+
     return execute_plugins

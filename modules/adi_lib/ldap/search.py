@@ -185,7 +185,7 @@ class LDAPSearch(object):
 
             for ace in sd['Dacl'].aces:
                 # 具有写入权限的用户
-                print(ace)
+                # print(ace)
                 if ace['Ace']['Mask'].hasPriv(ACCESS_ALLOWED_OBJECT_ACE.ADS_RIGHT_DS_WRITE_PROP) == True:
                     sid = ace['Ace']['Sid'].formatCanonical()
                     if sid not in sid_list:

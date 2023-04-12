@@ -3,12 +3,13 @@
 import json
 import os
 import traceback
-from modules.adi_lib.common.log import logger
 from modules.adi_lib.common.util import lazy_property
 # from modules.adi_lib.database.mongo_cli import Collection
 # from modules.adi_lib.database.redis_cli import RedisClient
 from modules.adi_lib.ldap.search import LDAPSearch
 from copy import deepcopy
+
+from utils import output
 
 
 class Base(object):
@@ -113,8 +114,8 @@ class Base(object):
             with open(pack_path, 'r') as f:
                 ret = json.load(f)
         except Exception as e:
-            logger.error(str(e))
-            logger.error(traceback.format_exc())
+            output.error(str(e))
+            output.error(traceback.format_exc())
         return ret
 
 
@@ -161,6 +162,6 @@ class BaseSearch(Base):
             with open(pack_path, 'r') as f:
                 ret = json.load(f)
         except Exception as e:
-            logger.error(str(e))
-            logger.error(traceback.format_exc())
+            output.error(str(e))
+            output.error(traceback.format_exc())
         return ret

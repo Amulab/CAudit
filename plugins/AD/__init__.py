@@ -78,7 +78,7 @@ class PluginADScanBase(PluginBase, BaseSearch):
         }
 
         meta_data = {
-            "min_password_day":45
+
         }
         env = {}
 
