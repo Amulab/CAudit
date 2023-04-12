@@ -15,7 +15,6 @@ class Base(object):
     """
     插件基类
     >>> m = Base()
-    >>> m.verify()
     """
 
     def __init__(self, dc_conf, meta_data, env):
@@ -117,15 +116,6 @@ class Base(object):
             logger.error(str(e))
             logger.error(traceback.format_exc())
         return ret
-
-    def verify(self, *args, **kwargs):
-        """
-        插件验证方法，实现插件验证逻辑
-        :param args:
-        :param kwargs:
-        :return: dict {"status": "1/0/-1","data": {},"desc": "","error": "",}
-        """
-        raise NotImplementedError("plugin subclass implemented method")
 
 
 class BaseSearch(Base):

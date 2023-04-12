@@ -126,11 +126,12 @@ class Output(BaseScreen):
                 status = run_status_string[-1]
                 result_value = v["results"]
 
-            if len(result_value) > 40:
-                # 自动换行
-                result_table.add_row([plugin_name, status, fill(result_value.strip(), width=40)])
-            else:
-                result_table.add_row([plugin_name, status, result_value.strip()])
+            if status != "Failed":
+                if len(result_value) > 40:
+                    # 自动换行
+                    result_table.add_row([plugin_name, status, fill(result_value.strip(), width=40)])
+                else:
+                    result_table.add_row([plugin_name, status, result_value.strip()])
 
         # 打印表格 TODO 删除表格边框
         output.success(f"script results{output.RESET}\n"

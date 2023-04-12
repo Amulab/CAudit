@@ -77,7 +77,9 @@ class PluginADScanBase(PluginBase, BaseSearch):
             "platform": ""
         }
 
-        meta_data = {}
+        meta_data = {
+            "min_password_day":45
+        }
         env = {}
 
         super(BaseSearch, self).__init__(dc_conf, meta_data, env)

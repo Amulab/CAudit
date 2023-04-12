@@ -7,7 +7,7 @@ from importlib import import_module
 import utils
 from plugins import PluginBase
 from utils.logger import output
-from utils.plugin_utils import get_plugin_type, load_plugin, get_exploit_plugin, filter_user_plugin
+from utils.plugin_utils import get_plugin_type, load_plugin, filter_user_plugin
 
 
 def print_example():
@@ -102,6 +102,7 @@ if __name__ == '__main__':
             results.append({
                 "result": r,
                 "alias": plugin_cls.alias,
+                "display": plugin_cls.display,
                 "plugin_name": plugin_cls.__module__
             })
 
