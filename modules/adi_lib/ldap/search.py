@@ -7,8 +7,8 @@
 import random
 
 from ldap3 import Server, Connection, ALL, SUBTREE
-from adi_lib.common.errors import LDAPSearchFailException
-from adi_lib.common.util import get_netbios_domain, escape_ldap_filter
+from modules.adi_lib.common.errors import LDAPSearchFailException
+from modules.adi_lib.common.util import get_netbios_domain, escape_ldap_filter
 from ldap3.protocol.microsoft import security_descriptor_control
 from impacket.uuid import bin_to_string
 import impacket.ldap.ldaptypes

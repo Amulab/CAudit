@@ -1,5 +1,5 @@
 # coding=utf-8
-from adi_lib.ldap.ldaptypes import LDAP_SID, ACL
+from modules.adi_lib.ldap.ldaptypes import LDAP_SID, ACL
 from impacket.structure import Structure
 
 

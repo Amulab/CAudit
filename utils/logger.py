@@ -149,7 +149,6 @@ class Output(BaseScreen):
             if status == "Error":
                 total["e_count"] += 1
 
-        # 打印表格 TODO 删除表格边框
         output.success(f"script results{output.RESET}\n"
                        f"{result_table}\n")
 
