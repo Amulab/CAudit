@@ -45,7 +45,7 @@ def sid_not_manager(sids):
     return enroll_sidss
 
 
-class PluginADxxx(PluginADScanBase):
+class PluginADESC32(PluginADScanBase):
     """
     ESC3.2 - 注册代理模板配置不当
     """

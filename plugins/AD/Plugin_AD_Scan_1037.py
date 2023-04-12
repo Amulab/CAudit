@@ -5,7 +5,7 @@ from utils.consts import AllPluginTypes
 from ldap3 import SUBTREE
 
 
-class PluginADXXX(PluginADScanBase):
+class PluginADPrivilageAccountNumberGT50(PluginADScanBase):
     """`特权账号数量不符合基线要求"""  # 特权账号超过50个或者总用户账户数量的百分之五就会告警
 
     display = "特权账号数量过多"
