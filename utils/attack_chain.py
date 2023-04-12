@@ -36,7 +36,7 @@
 #             self.head = node
 #             self.depth += 1
 #
-#             # print(f"insert node {node.name} to head. current depth: {self.depth}")
+#             
 #             return True
 #
 #         else:
@@ -58,7 +58,7 @@
 #                     # 将节点插入到当前节点的下一跳中
 #                     current_node.saved_next_node.append(node)
 #
-#                     # print(f"insert {node.name}. current depth: {self.depth}")
+#                     
 #                     return True
 #             else:
 #

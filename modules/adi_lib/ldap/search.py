@@ -7,12 +7,15 @@
 import random
 
 from ldap3 import Server, Connection, ALL, SUBTREE
-from modules.adi_lib.common.errors import LDAPSearchFailException
-from modules.adi_lib.common.util import get_netbios_domain, escape_ldap_filter
+from adi_lib.common.errors import LDAPSearchFailException
+from adi_lib.common.util import get_netbios_domain, escape_ldap_filter
 from ldap3.protocol.microsoft import security_descriptor_control
 from impacket.uuid import bin_to_string
 import impacket.ldap.ldaptypes
 from impacket.ldap.ldaptypes import ACCESS_ALLOWED_OBJECT_ACE, SR_SECURITY_DESCRIPTOR
+
+from utils import output
+
 
 class LDAPSearch(object):
     def __init__(self, domain, ldap_account):
@@ -56,7 +59,7 @@ class LDAPSearch(object):
             entry = self.con.entries[0]
             return entry
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_admins(self):
@@ -83,7 +86,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_constrained_accounts(self):
@@ -96,7 +99,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_unconstrained_accounts(self):
@@ -109,7 +112,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_pre_auth_not_required(self):
@@ -119,7 +122,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_spn_account(self):
@@ -129,7 +132,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def get_support_aes_account(self):
@@ -139,7 +142,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries[random.randint(20, 180)]
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_by_custom(self, filter_condition, attributes, paged_size=10000):
@@ -148,7 +151,7 @@ class LDAPSearch(object):
         if self.con.result["result"] == 0 and len(self.con.entries) > 0:
             return self.con.entries
         elif self.con.result["result"] != 0:
-            print(self.con.result)
+            output.debug(self.con.result)
             raise LDAPSearchFailException()
 
     def search_admins_info(self, attributes_value, filter_query=''):
@@ -185,7 +188,6 @@ class LDAPSearch(object):
 
             for ace in sd['Dacl'].aces:
                 # 具有写入权限的用户
-                # print(ace)
                 if ace['Ace']['Mask'].hasPriv(ACCESS_ALLOWED_OBJECT_ACE.ADS_RIGHT_DS_WRITE_PROP) == True:
                     sid = ace['Ace']['Sid'].formatCanonical()
                     if sid not in sid_list:

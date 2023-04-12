@@ -121,7 +121,7 @@ class VCLdap:
             attributes=['vmwAuthzPermissionRoleId']
         )
         for entry in self.conn.response:
-            # print(unquote(entry['dn']).split(','))
+            
             parsed_dn = unquote(entry['dn']).split(',')
             dn_parts = parsed_dn[0].strip('cn=').split('@')
             attrs = ['principalName', 'propagate', 'docuri']
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     ldap_pwd_spray_test(vc_addr)
     # exit(1)
     vc = VCLdap(vc_addr, vc_user, vc_pass)
-    # print(f'{"-" * 20}查询管理员{"-" * 20}')
+    
     # vc.query_admins()
     # exit(1)
     username = ''.join(random.choices(string.ascii_letters, k=10))
@@ -281,4 +281,4 @@ if __name__ == '__main__':
     finally:
         vc.detete_user(username)
 
-    # print(f'syslog5424_app: {app} and host: {vc_addr}')
+    

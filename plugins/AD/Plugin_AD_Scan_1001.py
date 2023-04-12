@@ -46,7 +46,6 @@ class PluginADPwdNoChange45(PluginADScanBase):
             time_lastpwdset = datetime.datetime.combine(pwdLastSet, datetime.time.min)
             localtime = datetime.datetime.now()
             num_d1 = localtime - time_lastpwdset
-            #print(entry["attributes"]["cn"],time_lastpwdset,num_d1.days)
 
             if num_d1.days > min_password_day:
                 if isinstance(entry["attributes"]["lastLogonTimestamp"], list) and len(

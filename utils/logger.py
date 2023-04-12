@@ -97,43 +97,63 @@ class Output(BaseScreen):
 
         # root节点
         success_plugin_nodes = []
-        title = ["Plugin Name", "Status", "Result"]
+        title = ["Plugin Name", "Display", "Status", "Result"]
         run_status_string = ["Failed", "Success", "Error"]
 
+        total = {
+            "total": len(results),
+            "s_count":0,
+            "f_count":0,
+            "e_count":0
+        }
+
         result_table = PrettyTable(title)
+        # 设置对齐
         result_table.align["Plugin Name"] = "l"
+        result_table.align["Display"] = "l"
+        result_table.align["Status"] = "l"
+        result_table.align["Result"] = "l"
+        # 消除边框
+        result_table.border = False
 
         for plugin_name, v in results.items():
-            try:
-                status = run_status_string[v["results"]["status"]]
 
-                # 将结果转化为str
+            status = run_status_string[v["results"]["status"]]
+
+            if status != "Failed":
+                # 记录成功和错误结果
                 result_value = ""
-                if status != "Failed":
+                try:
                     for ins in v["results"]["data"]["instance_list"]:
                         for k, val in ins.items():
                             # TODO 将结果加到HTML报告, xray html 模板
                             result_value += f"{k}: {str(val)}\n"
+                except TypeError:
+                    status = run_status_string[-1]
+                    result_value = v["results"]
 
-                # 添加攻击链节点
-                if status == "Success":
-                    success_plugin_nodes.append(v["alias"])
-            except TypeError:
-                status = run_status_string[-1]
-                result_value = v["results"]
+                # if len(result_value) > 40:
+                #     # 自动换行
+                #     result_table.add_row([plugin_name, v["display"], status, fill(result_value.strip(), width=40)])
+                # else:
+                result_table.add_row([plugin_name, v["display"], status, result_value.strip()])
 
-            if status != "Failed":
-                if len(result_value) > 40:
-                    # 自动换行
-                    result_table.add_row([plugin_name, status, fill(result_value.strip(), width=40)])
-                else:
-                    result_table.add_row([plugin_name, status, result_value.strip()])
+            # 添加攻击链节点
+            if status == "Success":
+                success_plugin_nodes.append(v["alias"])
+                total["s_count"] += 1
+
+            if status == "Failed":
+                total["f_count"] += 1
+
+            if status == "Error":
+                total["e_count"] += 1
 
         # 打印表格 TODO 删除表格边框
         output.success(f"script results{output.RESET}\n"
                        f"{result_table}\n")
 
-        # TODO 打印结果路径
+        # TODO 打印html输出结果路径
 
         self.info("Attack chains:")
         self.debug(f"get attack root chain node: {success_plugin_nodes}")
@@ -144,6 +164,12 @@ class Output(BaseScreen):
         for n in success_plugin_nodes:
             a_chains.match(n)
         a_chains.print_chains()
+
+        output.info(f"Total:\n"
+                    f"{'':^4}Number of plugin executions: {total['total']}\n"
+                    f"{'':^4}Number of plugin hits:       {total['s_count']}\n"
+                    f"{'':^4}Number of plugin misses:     {total['f_count']}\n"
+                    f"{'':^4}Number of plugin runtime errors:  {total['e_count']}\n")
 
 
 output = Output()

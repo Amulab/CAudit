@@ -40,7 +40,7 @@ class PluginADNT4CompatibleTrust(PluginADScanBase):
             ObjectCategory1 = str(entry["attributes"]["ObjectCategory"])
             # ret = ObjectCategory1.find("trustedDomain")                       #我2012看到是下面这种形式的，不排除旧版本是这种,在objectclass属性里是trustedDomain。
             ret = ObjectCategory1.find("CN=Trusted-Domain,")
-            # print(ret)
+            
             if ret != -1:
                 result['status'] = 1
                 instance = {}

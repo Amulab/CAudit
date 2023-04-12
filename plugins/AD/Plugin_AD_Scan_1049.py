@@ -21,7 +21,7 @@ class PluginADNSPIAccess(PluginADScanBase):
         instance_list = []
 
         search_base = "CN=Configuration," + self.ldap_cli.domain_dn
-        # print(search_base)
+        
         query = f"(distinguishedName=CN=Directory Service,CN=Windows NT,CN=Services,{search_base})"  # 也可以用下面这种直接找DSHeuristics，然后再在下面判定字符串CN=Directory Service,CN=Windows NT,CN=Services,
         # query = "(DSHeuristics=*)
         # (distinguishedName=CN=Directory Service,CN=Windows NT,CN=Services,CN = Configuration, DC = test12, DC = local)

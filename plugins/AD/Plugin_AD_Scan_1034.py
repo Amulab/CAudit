@@ -37,7 +37,7 @@ class PluginADNotEmptyDnsAdmins(PluginADScanBase):
             memberof1 = (str(entry["attributes"]["memberof"]))
             # name = entry["attributes"]["cn"]
             # guid = entry["attributes"]["primarygroupid"]
-            # print(name,"\n",guid)
+            
             ret = memberof1.find("DnsAdmins")
             if ret != -1:
                 result['status'] = 1

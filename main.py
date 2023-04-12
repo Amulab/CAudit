@@ -53,8 +53,6 @@ def check_debug():
             break
 
 
-# TODO 删除 pymongo、pyredis、IPy 依赖
-# --debug AD scan --all -D DC01.test19.local --domain-ip 192.168.19.249 -U administrator -P zawx@2022
 if __name__ == '__main__':
     # 加载全局参数
     check_debug()
