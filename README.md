@@ -22,15 +22,15 @@
 
 使用前先拉最新镜像
 
-`docker pull netstarsec/center`
+`docker pull amulab/center`
 
 运行
 
-`docker run --rm -it netstarsec/center`
+`docker run --rm -it amulab/center`
 
 为了方便使用可以先设置别名
 
-`alias center='docker run --rm -it netstarsec/center'`
+`alias center='docker run --rm -it amulab/center'`
 
 再使用`center`命令运行
 
