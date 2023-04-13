@@ -58,7 +58,7 @@ class PluginADMS14068(PluginADScanBase):
                 reason = '与域控时钟不同步'
             self.result['error'] = str(reason)
         if code == 1:
-            self.result['instance_list'] = [{"ip address": self.dc_ip}]
+            self.result["data"]['instance_list'] = [{"ip address": self.dc_ip}]
 
         return self.result
 

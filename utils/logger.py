@@ -1,5 +1,4 @@
 import logging
-from textwrap import fill
 
 import colorama
 import colorlog
@@ -18,6 +17,55 @@ Example:
 
 from prettytable import PrettyTable
 from utils import module_base_class
+
+
+def print_centralization_help():
+    from utils import read_version
+
+    print(f"""
+bannerbannerbanner
+bannerbannerbanner
+bannerbannerbanner
+               {read_version()}
+    
+{output.RED}可用模块{output.RESET}:
+    {'':^4}{output.YELLOW}{' '.join(module_base_class.keys())}{output.RESET}
+{output.RED}AD{output.RESET}:
+   {output.YELLOW}scan{output.RESET}
+       [-h] (--all | --no-all | --plugin PLUGINS [PLUGINS ...]) [-U USERNAME] [-P PASSWORD] -D DOMAIN_FQDN [--dc-ip DOMAIN_IP]
+       
+       --all       加载全部扫描插件
+       --plugin PLUGINS [PLUGINS ...]
+                   选择一个/多个扫描插件,输入插件别名,程序会寻找别名对应的插件
+       -U USERNAME, --username USERNAME
+                   指定域控用户名(大部分扫描插件需要)
+       -P PASSWORD, --password PASSWORD
+                   密码
+       -D DOMAIN_FQDN, --domain DOMAIN_FQDN
+                   指定域控FQDN (DC01.test.lab)
+       --dc-ip DOMAIN_IP
+                   手动指定域控ip地址
+   {output.YELLOW}exploit{output.RESET}
+       (程序设计)每个漏洞利用插件都有自己的参数, 使用 -h/--help查看对应参数
+
+{output.RED}Exchange{output.RESET}:
+   ....
+
+----
+
+{output.RED}Example{output.RESET}:
+    {output.YELLOW}AD{output.RESET}:
+        列出扫描插件信息
+            {output.GREEN}./main.py AD scan -h{output.RESET}
+        列出漏洞利用插件信息
+            {output.GREEN}./main.py AD exploit -h{output.RESET}
+            {output.GREEN}./main.py AD exploit kerb_ue -h{output.RESET}
+        使用全部扫描插件
+            {output.GREEN}./main.py AD scan --all -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com{output.RESET}
+        使用指定的扫描插件
+            {output.GREEN}./main.py AD scan --plugin no_recycle_bin_dc nver_expire_priv_act -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com{output.RESET}
+""")
+    exit(0)
 
 
 class BaseScreen:
@@ -79,7 +127,10 @@ class Output(BaseScreen):
         super().__init__(fmt='%(message)s')
         self.isDebug = False
 
-    def print_help(self, mod=""):
+    def print_simple_help(self, mod=""):
+        if mod == "all":
+            print_centralization_help()
+
         if mod == "":
             print(f"valid module:")
             [print(f'{"":^4}{x}') for x in module_base_class.keys()]

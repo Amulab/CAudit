@@ -23,7 +23,7 @@ class PluginADEnableSMBv1(PluginADScanBase):
             SMBConnection(self.dc_hostname, self.dc_ip, preferredDialect=SMB_DIALECT, timeout=timeout)
 
             self.result['status'] = 1
-            self.result['instance_list'] = [{"ip address": self.dc_ip}]
+            self.result["data"]['instance_list'] = [{"ip address": self.dc_ip}]
 
         except NetBIOSError:
             self.result['status'] = 0

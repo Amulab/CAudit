@@ -4,6 +4,9 @@ import sys
 from utils.consts import module_base_class
 from utils.logger import output
 
+# TODO 路径问题, 和load_plugin()一样
+version_file = "./version"
+
 
 def get_user_module() -> str:
     mod = ""
@@ -19,12 +22,15 @@ def get_user_exploit_input() -> str:
     try:
         for a in sys.argv:
             if a == "exploit":
-                u_plugin = sys.argv[sys.argv.index(a)+1]
+                u_plugin = sys.argv[sys.argv.index(a) + 1]
     except IndexError:
         output.error("Please specify exploit type plugin, use --help to list plugins")
         sys.exit(-2)
     return u_plugin
 
+
+def read_version() -> str:
+    with open(version_file, "r") as f: return f.readline().strip()
 
 # def read_json_file(file_path: str) -> dict:
 #     try:
@@ -36,4 +42,3 @@ def get_user_exploit_input() -> str:
 #     except FileNotFoundError:
 #         output.error(f"Can't found json file {file_path}")
 #         sys.exit(-1)
-

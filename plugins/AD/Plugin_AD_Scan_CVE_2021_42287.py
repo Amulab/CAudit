@@ -65,7 +65,7 @@ class S4U2SELF:
         self.result = {
             "status": 1,  # 0 没有漏洞 1有漏洞 -1是插件报错了
             "data": {
-                "instances": [{"ip address": dc_ip}]
+                "instance_list": [{"ip address": dc_ip}]
             },
             "desc": "",
             "error": "",

@@ -1,4 +1,5 @@
 # 默认插件模块路径
+
 PLUGIN_DIR = "plugins"
 # 插件脚本以Plugin开头. Plugin_xx_xx.py
 plugin_contain_name: str = "Plugin"
