@@ -1,5 +1,6 @@
 from copy import copy
 
+import ldap3.core.exceptions
 from ldap3 import SUBTREE
 
 from plugins.AD import PluginADScanBase
@@ -35,23 +36,27 @@ class PluginADRBCDProtTransform(PluginADScanBase):
                                                                          paged_size=1000,
                                                                          generator=True)
 
-        for entry in entry_generator:
-            if entry["type"] != "searchResEntry":
-                continue
-            if len(entry["attributes"]["msDS-AllowedToActOnBehalfOfOtherIdentity"]) > 0:
-                result['status'] = 1
-                instance = {}
-                instance["主机名"] = entry["attributes"]["cn"]
-                instance["DN"] = entry["attributes"]["distinguishedName"]
+        try:
+            for entry in entry_generator:
+                if entry["type"] != "searchResEntry":
+                    continue
+                if len(entry["attributes"]["msDS-AllowedToActOnBehalfOfOtherIdentity"]) > 0:
+                    result['status'] = 1
+                    instance = {}
+                    instance["主机名"] = entry["attributes"]["cn"]
+                    instance["DN"] = entry["attributes"]["distinguishedName"]
 
-                AllowedToActOnBehalfOfOtherIdentity = entry["attributes"]["msDS-AllowedToActOnBehalfOfOtherIdentity"]
-                sd = SR_SECURITY_DESCRIPTOR()
-                sd.fromString(AllowedToActOnBehalfOfOtherIdentity)
-                for ace in sd['Dacl'].aces:
-                    sid = ace['Ace']['Sid'].formatCanonical()
-                    instance["配置SID"] = sid
+                    AllowedToActOnBehalfOfOtherIdentity = entry["attributes"]["msDS-AllowedToActOnBehalfOfOtherIdentity"]
+                    sd = SR_SECURITY_DESCRIPTOR()
+                    sd.fromString(AllowedToActOnBehalfOfOtherIdentity)
+                    for ace in sd['Dacl'].aces:
+                        sid = ace['Ace']['Sid'].formatCanonical()
+                        instance["配置SID"] = sid
 
-                instance_list.append(instance)
+                    instance_list.append(instance)
+        except ldap3.core.exceptions.LDAPAttributeError as e:
+            # 域控没有这个属性的时候会在for循环报错
+            result["status"] = 0
 
         result['data'] = {"instance_list": instance_list}
         return result
