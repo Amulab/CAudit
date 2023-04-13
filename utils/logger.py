@@ -88,7 +88,7 @@ class Output(BaseScreen):
                   f"{'':^4}scan\n"
                   f"{'':^4}exploit")
 
-    def print_script_run_result(self, results: dict) -> None:
+    def show_results(self, results: dict) -> None:
         """
         以表格形式输出结果
         :param results: 收集的结果，字典
@@ -118,7 +118,11 @@ class Output(BaseScreen):
 
         for plugin_name, v in results.items():
 
-            status = run_status_string[v["results"]["status"]]
+            # TODO results可能为string，插件报错
+            try:
+                status = run_status_string[v["results"]["status"]]
+            except TypeError as e:
+                output.debug(f"print failed: {e}")
 
             if status != "Failed":
                 # 记录成功和错误结果
@@ -131,6 +135,8 @@ class Output(BaseScreen):
                 except TypeError:
                     status = run_status_string[-1]
                     result_value = v["results"]
+                except KeyError:
+                    result_value = str(v["results"]["error"])
 
                 # if len(result_value) > 40:
                 #     # 自动换行

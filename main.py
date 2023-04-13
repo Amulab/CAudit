@@ -130,4 +130,4 @@ if __name__ == '__main__':
             }
 
     # 输出结果
-    output.print_script_run_result(scripts_result)
+    output.show_results(scripts_result)

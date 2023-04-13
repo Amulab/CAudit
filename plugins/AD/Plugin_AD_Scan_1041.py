@@ -20,7 +20,11 @@ class PluginADNoRecycleBinDC(PluginADScanBase):
         result = copy(self.result)
         instance_list = []
 
-        query = "(objectclass=*)"  # 另一种查找方式是直接查msDS-EnabledFeature属性，配了之后会出现在”CN=Partitions,CN=Configuration,DC=test12,DC=local“和”CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=test12,DC=local“（上一个位置是固定的，这一个不固定）
+        # 另一种查找方式是直接查msDS-EnabledFeature属性，
+        # 配了之后会出现在”CN=Partitions,CN=Configuration,DC=test12,DC=local“和
+        # ”CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=test12,DC=local“
+        # （上一个位置是固定的，这一个不固定）
+        query = "(objectclass=*)"
         attributes = ["cn", "msDS-EnabledFeature", "distinguishedName"]
 
         entry_generator = self.ldap_cli.con.extend.standard.paged_search(
@@ -41,6 +45,7 @@ class PluginADNoRecycleBinDC(PluginADScanBase):
             s = s + msDSEnabledFeature
         if "['CN=Recycle Bin Feature," not in s:
             result['status'] = 1
+            instance_list.append({"ip address":self.dc_ip})
 
         result['data'] = {"instance_list": instance_list}
         return result

@@ -14,9 +14,6 @@ PLUGIN_EXECUTE_ERROR = ScriptRunStatus("Error")
 
 
 class ADPluginAlias:
-    # scan
-    NoPreAuth = "no_pre_auth"
-
     # exploit
     UserEnum = "user_enum"
     PassBrute = "password_brute"
@@ -36,7 +33,7 @@ class ADPluginAlias:
 
 # TODO 修改模块基类硬编码
 module_base_class = {
-    "AD": ["PluginAdBase", "PluginADScanBase"],
+    "AD": ["PluginAdBase", "PluginADScanBase", "PluginAdExploitBase"],
     "VCenter": ["PluginVCenterBase"],
     "Kubernetes": ["PluginKubernetesBase"],
     "Exchange": ["PluginExchangeBase"],

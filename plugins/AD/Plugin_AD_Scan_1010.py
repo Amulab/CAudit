@@ -3,7 +3,7 @@ from copy import copy
 from ldap3 import SUBTREE
 
 from plugins.AD import PluginADScanBase
-from utils.consts import ADPluginAlias, AllPluginTypes
+from utils.consts import AllPluginTypes
 
 
 class PluginADNoPreAuth(PluginADScanBase):
@@ -17,7 +17,7 @@ class PluginADNoPreAuth(PluginADScanBase):
     """
 
     display = "存在不需要kerberos预身份验证的账户"
-    alias = ADPluginAlias.NoPreAuth
+    alias = "no_pre_auth"
     p_type = AllPluginTypes.Scan
 
     def __init__(self, *args, **kwargs):

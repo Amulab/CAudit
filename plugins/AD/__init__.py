@@ -44,7 +44,8 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
         if exp.p_type == AllPluginTypes.Exploit:
             exp_sub_plugin_mode = exp_plugin_mode.add_parser(exp.alias,
                                                          formatter_class=argparse.RawDescriptionHelpFormatter)
-        if exp.alias == exp_sub_name:
+        # 防止没有输入alice的错误
+        if exp.alias != "" and exp.alias == exp_sub_name:
             c:PluginBase = exp()
             all_plugins[name] = c
             c.reg_argument(exp_sub_plugin_mode)
@@ -62,6 +63,9 @@ class PluginADScanBase(PluginBase, BaseSearch):
         _fqdn: list = uarg.domain_fqdn.split(".")
         _base_dn = f"dc={_fqdn[-2]},dc={_fqdn[-1]}"
 
+        if len(_fqdn) !=3:
+            output.error("domain fqdn input error.")
+
         dc_conf = {
             "ldap_conf": {
                 "dn": _base_dn,
@@ -72,7 +76,7 @@ class PluginADScanBase(PluginBase, BaseSearch):
             },
             "name": '.'.join(_fqdn[-2:]),
             "ip": uarg.domain_ip,
-            "hostname": "",
+            "hostname": _fqdn[0],
             "fqdn": '.'.join(args[0].domain_fqdn.split(".")),
             "platform": ""
         }

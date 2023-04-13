@@ -39,11 +39,12 @@ class PluginADNotEmptySchemaAdmins(PluginADScanBase):
                 continue
             if entry["attributes"]["member"] != None:
                 for member_res in entry["attributes"]["member"]:
-                    result['status'] = 1
-                    instance = {}
-                    
                     if "CN=Administrator," in str(member_res):
                         continue
+
+                    result['status'] = 1
+                    instance = {}
+
                     instance["组名"] = entry["attributes"]["cn"]
                     instance["DN"] = entry["attributes"]["distinguishedName"]
                     instance["成员"] = member_res
