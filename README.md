@@ -18,6 +18,21 @@
 ./main.py AD scan --plugin no_recycle_bin_dc nver_expire_priv_act -D dc.test.lab --domain-ip 20.0.0.100 -U administrator -P 123.com
 ```
 
+### 使用 Docker
+
+使用前先拉最新镜像
+
+`docker pull netstarsec/center`
+
+运行
+
+`docker run --rm -it netstarsec/center`
+
+为了方便使用可以先设置别名
+
+`alias center='docker run --rm -it netstarsec/center'`
+
+再使用`center`命令运行
 
 ## 插件编写规范
 
