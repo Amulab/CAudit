@@ -35,7 +35,7 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
     scan_mode.add_argument("-P", "--password", required=False, default=None, dest="password")
     scan_mode.add_argument("-D", "--domain", help="Domain FQDN(dc.test.lab)", required=True, default=None,
                            dest="domain_fqdn")
-    scan_mode.add_argument("--domain-ip", required=False, default=None, dest="domain_ip")
+    scan_mode.add_argument("--dc-ip", required=False, default=None, dest="domain_ip")
 
     exploit_mode = ad_sub_mode.add_parser("exploit", formatter_class=argparse.RawDescriptionHelpFormatter)
     exp_plugin_mode = exploit_mode.add_subparsers()

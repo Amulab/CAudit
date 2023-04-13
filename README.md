@@ -9,13 +9,13 @@
 使用全部扫描插件
 
 ```bash
-./main.py AD scan --all -D dc.test.lab --domain-ip 20.0.0.100 -U administrator -P 123.com
+./main.py AD scan --all -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com
 ```
 
 使用指定的扫描插件
 
 ```bash
-./main.py AD scan --plugin no_recycle_bin_dc nver_expire_priv_act -D dc.test.lab --domain-ip 20.0.0.100 -U administrator -P 123.com
+./main.py AD scan --plugin no_recycle_bin_dc nver_expire_priv_act -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com
 ```
 
 ### 使用 Docker
