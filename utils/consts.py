@@ -33,6 +33,7 @@ class ADPluginAlias:
 
 
 # TODO 修改模块基类硬编码
+# TODO 修改模块名称为小写 -2
 module_base_class = {
     "AD": ["PluginAdBase", "PluginADScanBase", "PluginAdExploitBase"],
     "VCenter": ["PluginVCenterBase"],

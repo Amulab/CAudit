@@ -170,6 +170,7 @@ class Output(BaseScreen):
         for plugin_name, v in results.items():
 
             # TODO results可能为string，插件报错
+            status = "Failed"
             try:
                 status = run_status_string[v["results"]["status"]]
             except TypeError as e:
