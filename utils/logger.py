@@ -211,6 +211,9 @@ class Output(BaseScreen):
                        f"{result_table}\n")
 
         # TODO 打印html输出结果路径
+        # TODO scan打印结果过多就精简
+        # TODO exploit 扫描结果着重标记（分割）
+        # TODO 代码格式README, 命名规范文档 - 1
 
         self.info("Attack chains:")
         self.debug(f"get attack root chain node: {success_plugin_nodes}")
