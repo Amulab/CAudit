@@ -1,4 +1,5 @@
 import argparse
+import sys
 from argparse import ArgumentParser
 
 from modules.adi_lib.plugin.base import BaseSearch
@@ -48,7 +49,13 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
         if exp.alias != "" and exp.alias == exp_sub_name:
             c:PluginBase = exp()
             all_plugins[name] = c
-            c.reg_argument(exp_sub_plugin_mode)
+
+            try:
+                c.reg_argument(exp_sub_plugin_mode)
+            except argparse.ArgumentError as e:
+                output.error(f"{name} argument error: {e}")
+                sys.exit(-2)
+
 
 
 class PluginAdExploitBase(PluginBase):
