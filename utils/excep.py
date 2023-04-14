@@ -1,0 +1,2 @@
+class ListUsersException(Exception):
+    pass

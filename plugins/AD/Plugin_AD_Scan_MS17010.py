@@ -72,7 +72,6 @@ class PluginADMS17010(PluginADScanBase):
             s.close()
 
             if b"\x05\x02\x00\xc0" == resp4[9:13]:
-                # print(f"[+] {ip} 存在ms7-010远程溢出漏洞!!!")
                 return 1, f"{ip} 存在ms7-010远程溢出漏洞"
             s.close()
 

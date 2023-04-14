@@ -119,7 +119,6 @@ class S4U2SELF:
                     print(data[upn['DnsDomainNameOffset']:])
                     print()
             elif infoBuffer['ulType'] == 0x10:
-                # print(1)
                 self.result['status'] = 0
                 self.result['data'] = {}
                 return False
@@ -131,7 +130,6 @@ class S4U2SELF:
             buff = buff[len(infoBuffer):]
 
         if nopac is not None:
-            # print("%s is nopac vul" % self.__kdcHost)
             return True
 
     def dump(self):
@@ -305,7 +303,3 @@ class S4U2SELF:
             plainText = cipher.decrypt(sessionKey, 2, cipherText)
 
         return self.printPac(plainText)
-
-
-class ListUsersException(Exception):
-    pass

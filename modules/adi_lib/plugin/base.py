@@ -101,7 +101,7 @@ class Base(object):
         ret = {}
         try:
             if not pack_path:
-                print(cls.__module__)
+                # print(cls.__module__)
                 if ".main" in cls.__module__:
                     current_dir = os.path.dirname(os.path.abspath([cls.__module__][0]))
                     pack_path = os.path.join(current_dir, "plugins",

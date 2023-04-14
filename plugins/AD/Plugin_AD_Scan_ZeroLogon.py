@@ -47,11 +47,8 @@ class PluginADZeroLogon(PluginADScanBase):
                 if ex.get_error_code() == 0xc0000022:
                     continue
                 else:
-                    # ex.with_traceback()
                     pass
-                    # print(f'Unexpected error code from DC: {ex.get_error_code()}.')
             except BaseException as ex:
-                # print(f'Unexpected error: {ex}')
                 self.result['status'] = -1
                 self.result['error'] = str(ex)
                 break

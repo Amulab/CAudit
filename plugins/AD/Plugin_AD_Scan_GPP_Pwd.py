@@ -75,7 +75,7 @@ class GetGPPasswords(object):
                                 else:
                                     pass
                 except Exception as e:
-                    print(e)
+                    output.error(e)
             searchdirs = next_dirs
 
         if len(rets) !=0:

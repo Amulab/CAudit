@@ -44,10 +44,10 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
     for name, exp in all_plugins.items():
         if exp.p_type == AllPluginTypes.Exploit:
             exp_sub_plugin_mode = exp_plugin_mode.add_parser(exp.alias,
-                                                         formatter_class=argparse.RawDescriptionHelpFormatter)
+                                                             formatter_class=argparse.RawDescriptionHelpFormatter)
         # 防止没有输入alice的错误
         if exp.alias != "" and exp.alias == exp_sub_name:
-            c:PluginBase = exp()
+            c: PluginBase = exp()
             all_plugins[name] = c
 
             try:
@@ -55,7 +55,6 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
             except argparse.ArgumentError as e:
                 output.error(f"{name} argument error: {e}")
                 sys.exit(-2)
-
 
 
 class PluginAdExploitBase(PluginBase):
@@ -70,7 +69,7 @@ class PluginADScanBase(PluginBase, BaseSearch):
         _fqdn: list = uarg.domain_fqdn.split(".")
         _base_dn = f"dc={_fqdn[-2]},dc={_fqdn[-1]}"
 
-        if len(_fqdn) !=3:
+        if len(_fqdn) != 3:
             output.error("domain fqdn input error.")
 
         dc_conf = {
