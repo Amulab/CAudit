@@ -7,7 +7,7 @@ import chardet
 from impacket.smbconnection import (SMB2_DIALECT_002, SMB2_DIALECT_21,
                                     SMB_DIALECT, SessionError, SMBConnection)
 
-from plugins.__HXAD import PluginADScanBase
+from plugins.AD import PluginADScanBase
 from utils import output
 from utils.consts import AllPluginTypes
 

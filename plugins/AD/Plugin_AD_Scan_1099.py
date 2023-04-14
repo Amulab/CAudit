@@ -6,7 +6,7 @@ from ldap3 import SUBTREE
 
 
 # FILE_TIME_EPOCH = datetime.datetime(1601, 1, 1, 8)  # 加了 8 小时，如果没有8这个参数，那么转换出来的值将会比正常值少8小时
-from plugins.__HXAD import PluginADScanBase
+from plugins.AD import PluginADScanBase
 from utils.consts import AllPluginTypes
 
 FILE_TIME_EPOCH = datetime.datetime(1601, 1, 1)

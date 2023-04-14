@@ -6,7 +6,7 @@ from ldap3 import SUBTREE
 
 from impacket.ldap.ldaptypes import  SR_SECURITY_DESCRIPTOR
 
-from plugins.__HXAD import PluginADScanBase
+from plugins.AD import PluginADScanBase
 from utils.consts import AllPluginTypes
 
 

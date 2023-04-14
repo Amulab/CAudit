@@ -2,7 +2,7 @@ from copy import copy
 
 from ldap3 import SUBTREE
 
-from plugins.__HXAD import PluginADScanBase
+from plugins.AD import PluginADScanBase
 from utils.consts import AllPluginTypes
 
 

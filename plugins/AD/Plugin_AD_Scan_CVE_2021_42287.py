@@ -1,8 +1,9 @@
 import urllib3
 
+from utils import output
+
 urllib3.disable_warnings()
 import datetime
-import logging
 import random
 import struct
 from binascii import unhexlify
@@ -40,7 +41,7 @@ class PluginADNoPac(PluginADScanBase):
         try:
             dumper = S4U2SELF(self.ldap_username, self.ldap_username, self.ldap_user_password,
                               self.dc_domain, dc_ip=self.dc_ip)
-            dumper.dump()
+            # dumper.dump()
             self.result = dumper.result
         except Exception as e:
             if 'KRB_AP_ERR_BAD_INTEGRITY' in str(e):
@@ -84,8 +85,7 @@ class S4U2SELF:
         for bufferN in range(pacType['cBuffers']):
             infoBuffer = PAC_INFO_BUFFER(buff)
             data = pacType['Buffers'][infoBuffer['Offset'] - 8:][:infoBuffer['cbBufferSize']]
-            if logging.getLogger().level == logging.DEBUG:
-                print("TYPE 0x%x" % infoBuffer['ulType'])
+            output.debug("TYPE 0x%x" % infoBuffer['ulType'])
             if infoBuffer['ulType'] == 1:
                 type1 = TypeSerialization1(data)
                 # I'm skipping here 4 bytes with its the ReferentID for the pointer
@@ -93,39 +93,30 @@ class S4U2SELF:
                 kerbdata = KERB_VALIDATION_INFO()
                 kerbdata.fromString(newdata)
                 kerbdata.fromStringReferents(newdata[len(kerbdata.getData()):])
-                if logging.getLogger().level == logging.DEBUG:
-                    kerbdata.dump()
-                    print('Domain SID:', kerbdata['LogonDomainId'].formatCanonical())
-                    print()
+                # kerbdata.dump()
+                output.debug(f"Domain SID:{kerbdata['LogonDomainId'].formatCanonical()}\n")
+
             elif infoBuffer['ulType'] == PAC_CLIENT_INFO_TYPE:
                 clientInfo = PAC_CLIENT_INFO(data)
-                if logging.getLogger().level == logging.DEBUG:
-                    clientInfo.dump()
-                    print()
+                # clientInfo.dump()
             elif infoBuffer['ulType'] == PAC_SERVER_CHECKSUM:
                 signatureData = PAC_SIGNATURE_DATA(data)
-                if logging.getLogger().level == logging.DEBUG:
-                    signatureData.dump()
-                    print()
+                # signatureData.dump()
+
             elif infoBuffer['ulType'] == PAC_PRIVSVR_CHECKSUM:
                 signatureData = PAC_SIGNATURE_DATA(data)
-                if logging.getLogger().level == logging.DEBUG:
-                    signatureData.dump()
-                    print()
+                # signatureData.dump()
             elif infoBuffer['ulType'] == PAC_UPN_DNS_INFO:
                 upn = UPN_DNS_INFO(data)
-                if logging.getLogger().level == logging.DEBUG:
-                    upn.dump()
-                    print(data[upn['DnsDomainNameOffset']:])
-                    print()
+                # upn.dump()
+                output.debug(data[upn['DnsDomainNameOffset']:])
             elif infoBuffer['ulType'] == 0x10:
                 self.result['status'] = 0
                 self.result['data'] = {}
                 return False
             else:
                 hexdump(data)
-            if logging.getLogger().level == logging.DEBUG:
-                print("#" * 80)
+            output.debug("#" * 80)
 
             buff = buff[len(infoBuffer):]
 
@@ -165,10 +156,8 @@ class S4U2SELF:
         authenticator['cusec'] = now.microsecond
         authenticator['ctime'] = KerberosTime.to_asn1(now)
 
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('AUTHENTICATOR')
-            print(authenticator.prettyPrint())
-            print('\n')
+        output.debug('AUTHENTICATOR')
+        output.debug(authenticator.prettyPrint())
 
         encodedAuthenticator = encoder.encode(authenticator)
 
@@ -203,19 +192,12 @@ class S4U2SELF:
         #S4UByteArray += b(self.__behalfUser) + b(self.__domain) + b'Kerberos'
         S4UByteArray += self.__behalfUser.encode('utf-8') + self.__domain.encode('utf-8') + b'Kerberos'
 
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('S4UByteArray')
-            hexdump(S4UByteArray)
 
         # Finally cksum is computed by calling the KERB_CHECKSUM_HMAC_MD5 hash
         # with the following three parameters: the session key of the TGT of
         # the service performing the S4U2Self request, the message type value
         # of 17, and the byte array S4UByteArray.
         checkSum = _HMACMD5.checksum(sessionKey, 17, S4UByteArray)
-
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('CheckSum')
-            hexdump(checkSum)
 
         paForUserEnc = PA_FOR_USER_ENC()
         seq_set(paForUserEnc, 'userName', clientName.components_to_asn1)
@@ -225,9 +207,8 @@ class S4U2SELF:
         paForUserEnc['cksum']['checksum'] = checkSum
         paForUserEnc['auth-package'] = 'Kerberos'
 
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('PA_FOR_USER_ENC')
-            print(paForUserEnc.prettyPrint())
+        output.debug('PA_FOR_USER_ENC')
+        output.debug(paForUserEnc.prettyPrint())
 
         encodedPaForUserEnc = encoder.encode(paForUserEnc)
 
@@ -263,9 +244,8 @@ class S4U2SELF:
         myTicket = ticket.to_asn1(TicketAsn1())
         seq_set_iter(reqBody, 'additional-tickets', (myTicket,))
 
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('Final TGS')
-            print(tgsReq.prettyPrint())
+        output.debug('Final TGS')
+        output.debug(tgsReq.prettyPrint())
 
         message = encoder.encode(tgsReq)
 
@@ -273,9 +253,8 @@ class S4U2SELF:
 
         tgs = decoder.decode(r, asn1Spec=TGS_REP())[0]
 
-        if logging.getLogger().level == logging.DEBUG:
-            logging.debug('TGS_REP')
-            print(tgs.prettyPrint())
+        output.debug('TGS_REP')
+        output.debug(tgs.prettyPrint())
 
         cipherText = tgs['ticket']['enc-part']['cipher']
 

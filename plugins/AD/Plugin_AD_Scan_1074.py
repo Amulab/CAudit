@@ -1,7 +1,7 @@
 from copy import copy
 import os
 
-from plugins.__HXAD import PluginADScanBase
+from plugins.AD import PluginADScanBase
 from utils import output
 from utils.consts import AllPluginTypes
 
