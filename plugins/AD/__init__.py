@@ -23,7 +23,7 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
     """
     output.debug(f"init {__type__} parameters")
 
-    # AD-scan 模块
+    # __HXAD-scan 模块
     ad_sub_mode = parser.add_subparsers(dest="scan_type")
     scan_mode = ad_sub_mode.add_parser("scan", formatter_class=argparse.RawDescriptionHelpFormatter)
 
