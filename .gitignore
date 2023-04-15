@@ -5,6 +5,7 @@ logs/plugin.log
 __pycache__/
 *.py[cod]
 *$py.class
+*.ccache
 
 # C extensions
 *.so
