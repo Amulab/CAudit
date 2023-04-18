@@ -28,6 +28,10 @@ bannerbannerbanner
 bannerbannerbanner
                {read_version()}
     
+{output.RED}全局参数{output.RESET}
+    --debug    开启调试模式
+    --thread   设置线程数(scan 模式下生效)
+    
 {output.RED}可用模块{output.RESET}:
     {'':^4}{output.YELLOW}{' '.join(module_base_class.keys())}{output.RESET}
 {output.RED}AD{output.RESET}:
