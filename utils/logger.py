@@ -111,7 +111,7 @@ class BaseScreen:
         self.screenLogger.addHandler(self.screenHandle)
 
     def info(self, string):
-        self.screenLogger.info(f"{self.prefix_info} {string}")
+        self.screenLogger.info(f"{self.prefix_info} {string}{output.BLUE}")
 
     def success(self, string):
         self.screenLogger.info(f"{self.prefix_success} {string}")
