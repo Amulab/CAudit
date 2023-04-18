@@ -6,7 +6,7 @@ from plugins.AD import PluginADScanBase
 from utils.consts import AllPluginTypes
 
 
-class PluginADxxx(PluginADScanBase):
+class PluginADKerberosDelegation(PluginADScanBase):
     """可以使用Kerberos委派通过受信任的域林来控制当前域林"""
 
     display = "可以使用Kerberos委派通过受信任的域林来控制当前域林"

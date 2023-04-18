@@ -28,6 +28,10 @@ bannerbannerbanner
 bannerbannerbanner
                {read_version()}
     
+{output.RED}全局参数{output.RESET}
+    --debug    开启调试模式
+    --thread   设置线程数(scan 模式下生效)
+    
 {output.RED}可用模块{output.RESET}:
     {'':^4}{output.YELLOW}{' '.join(module_base_class.keys())}{output.RESET}
 {output.RED}AD{output.RESET}:
@@ -107,7 +111,7 @@ class BaseScreen:
         self.screenLogger.addHandler(self.screenHandle)
 
     def info(self, string):
-        self.screenLogger.info(f"{self.prefix_info} {string}")
+        self.screenLogger.info(f"{self.prefix_info} {string}{output.BLUE}")
 
     def success(self, string):
         self.screenLogger.info(f"{self.prefix_success} {string}")
@@ -213,7 +217,6 @@ class Output(BaseScreen):
         # TODO 打印html输出结果路径
         # TODO scan打印结果过多就精简
         # TODO exploit 扫描结果着重标记（分割）
-        # TODO 代码格式README, 命名规范文档 - 1
 
         self.info("Attack chains:")
         self.debug(f"get attack root chain node: {success_plugin_nodes}")

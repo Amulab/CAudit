@@ -34,7 +34,7 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
                                  nargs="+", dest="plugins")
     scan_mode.add_argument("-U", "--username", required=False, default=None, dest="username")
     scan_mode.add_argument("-P", "--password", required=False, default=None, dest="password")
-    scan_mode.add_argument("-D", "--domain", help="Domain FQDN(dc.test.lab)", required=True, default=None,
+    scan_mode.add_argument("-d", "--domain", help="Domain FQDN(dc.test.lab)", required=True, default=None,
                            dest="domain_fqdn")
     scan_mode.add_argument("--dc-ip", required=False, default=None, dest="domain_ip")
 
