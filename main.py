@@ -6,6 +6,7 @@ from importlib import import_module
 
 import utils
 from plugins import PluginBase
+from utils.consts import AllPluginTypes
 from utils.logger import output
 from utils.plugin_utils import get_plugin_type, load_plugin, filter_user_plugin
 
@@ -86,11 +87,15 @@ if __name__ == '__main__':
     # 执行, 多线程
     output.debug(f"Execute thread: {user_args.thread}")
     with concurrent.futures.ThreadPoolExecutor(max_workers=user_args.thread) as executor:
+        nl = ""
         temp_results = []
         results = []
 
+        if user_args.scan_type == AllPluginTypes.Exploit:
+            nl = "\n"
+
         for p in execute_plugins:
-            output.info(f"run plugin: {output.YELLOW}{p.__module__}{output.RESET}")
+            output.info(f"run plugin: {output.YELLOW}{p.__module__}{output.RESET}{nl}")
 
             plugin_cls: PluginBase = p
 
@@ -133,4 +138,5 @@ if __name__ == '__main__':
             }
 
     # 输出结果
-    output.show_results(scripts_result)
+    if user_args.scan_type == AllPluginTypes.Scan:
+        output.show_results(scripts_result)
