@@ -261,7 +261,7 @@ class CA:
                 remote_name = target.domain
 
             if "." not in remote_name:
-                output.warning(
+                output.error(
                     "%s doesn't look like a FQDN. DNS resolution will probably fail."
                     % repr(remote_name)
                 )

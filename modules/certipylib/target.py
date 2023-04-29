@@ -139,7 +139,7 @@ class Target:
 
         remote_name = options.target
         if ((options.do_kerberos or options.use_sspi) and not remote_name and not ptt and not dc_as_target):
-            output.warning(
+            output.error(
                 "Target name (-target) not specified and Kerberos or SSPI authentication is used. This might fail")
 
         if remote_name is None:

@@ -1,4 +1,45 @@
 from impacket import hresult_errors
+from impacket.krb5.kerberosv5 import constants as krb5_constants
+
+KRB5_ERROR_MESSAGES = krb5_constants.ERROR_MESSAGES
+if 77 not in KRB5_ERROR_MESSAGES:
+    KRB5_ERROR_MESSAGES.update(
+        {
+            77: (
+                "KDC_ERR_INCONSISTENT_KEY_PURPOSE",
+                "Certificate cannot be used for PKINIT client authentication",
+            ),
+            78: (
+                "KDC_ERR_DIGEST_IN_CERT_NOT_ACCEPTED",
+                "Digest algorithm for the public key in the certificate is not acceptable by the KDC",
+            ),
+            79: (
+                "KDC_ERR_PA_CHECKSUM_MUST_BE_INCLUDED",
+                "The paChecksum filed in the request is not present",
+            ),
+            80: (
+                "KDC_ERR_DIGEST_IN_SIGNED_DATA_NOT_ACCEPTED",
+                "The digest algorithm used by the id-pkinit-authData is not acceptable by the KDC",
+            ),
+            81: (
+                "KDC_ERR_PUBLIC_KEY_ENCRYPTION_NOT_SUPPORTED",
+                "The KDC does not support the public key encryption key delivery method",
+            ),
+            90: (
+                "KDC_ERR_PREAUTH_EXPIRED",
+                "The conversation is too old and needs to restart",
+            ),
+            91: (
+                "KDC_ERR_MORE_PREAUTH_DATA_REQUIRED",
+                "Additional pre-authentication required",
+            ),
+            92: (
+                "KDC_ERR_PREAUTH_BAD_AUTHENTICATION_SET",
+                "KDC cannot accommodate requested padata element",
+            ),
+            93: ("KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS", "Unknown critical option"),
+        }
+    )
 
 
 def translate_error_code(error_code: int) -> str:

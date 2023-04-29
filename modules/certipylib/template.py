@@ -215,7 +215,7 @@ class Template:
             ]
 
         if len(changes.keys()) == 0:
-            output.warning(
+            output.error(
                 "New configuration is the same as old configuration. Not updating"
             )
             return False
