@@ -165,6 +165,7 @@ class Target:
         self.do_kerberos = options.do_kerberos
         self.use_sspi = options.use_sspi
         self.dc_ip = dc_ip
+        self.adcs_ip = options.adcs_ip
         self.dc_host = dc_host
         self.timeout = 5
 
