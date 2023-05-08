@@ -674,13 +674,13 @@ def main():
     try:
         print(f'[+] ip {config.get("vc_ip")}')
         # 以下测试项目不需要凭据
-        # vcenter_version(config)
-        # eam_file_read(config)
-        # provider_log(config)
-        # cve2021_21972(config)
-        # cve2021_21985(config)
+        vcenter_version(config)
+        eam_file_read(config)
+        provider_log(config)
+        cve2021_21972(config)
+        cve2021_21985(config)
         # 22005包含异常jsp访问
-        # cve2021_22005(config)
+        cve2021_22005(config)
         cve2021_44228(config)
 
         # 以下为后渗透, 需要配置ssh和ldap密码
