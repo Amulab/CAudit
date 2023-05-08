@@ -12,7 +12,7 @@ __type__ = "AD"
 # 模块帮助信息
 __help__ = "AD module"
 
-__all__ = [__type__, __help__]
+__all__ = [__type__, __help__, "parse_user_args"]
 
 
 def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginBase], exp_sub_name: str) -> None:
@@ -93,3 +93,21 @@ class PluginADScanBase(PluginBase, BaseSearch):
         env = {}
 
         super(BaseSearch, self).__init__(dc_conf, meta_data, env)
+
+
+def parse_user_args(args: argparse.Namespace):
+    domain_fqdn: str = args.domain
+    domain_name = ".".join(domain_fqdn.split(".")[-2:])
+
+    try:
+        hash = args.hash
+    except Exception:
+        hash = args.hashes
+
+    if hash is not None:
+        lmhash, nthash = args.hashes.split(':')
+    else:
+        lmhash = ''
+        nthash = ''
+
+    return domain_fqdn, domain_name, args.dc_ip, lmhash, nthash
