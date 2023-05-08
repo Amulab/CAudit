@@ -1,6 +1,8 @@
 .DS_Store
 logs/plugin.log
 .idea
+2023_04_28_111311_Certipy.json
+*.pfx
 .idea/*
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -2,6 +2,7 @@
 from impacket.ldap import ldap, ldapasn1
 from impacket.ldap.ldaptypes import SR_SECURITY_DESCRIPTOR, ACCESS_ALLOWED_OBJECT_ACE
 
+from utils import output
 from .smb import get_machine_name
 
 from ldap3.protocol.microsoft import security_descriptor_control
@@ -75,7 +76,7 @@ def search_ldap(ldap_conn, search_filter, search_base=None, attributes=None, con
 
     except ldap.LDAPSearchError as e:
         if e.getErrorString().find('sizeLimitExceeded') >= 0:
-            logging.debug('sizeLimitExceeded exception caught, giving up and processing the data received')
+            output.debug('sizeLimitExceeded exception caught, giving up and processing the data received')
             # We reached the sizeLimit, process the answers we have already and that's it. Until we implement
             # paged queries
             return e.getAnswers()
