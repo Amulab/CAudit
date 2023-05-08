@@ -14,24 +14,6 @@ PLUGIN_EXECUTE_FAILED = ScriptRunStatus("Failed")
 PLUGIN_EXECUTE_ERROR = ScriptRunStatus("Error")
 
 
-class ADPluginAlias:
-    # exploit
-    UserEnum = "user_enum"
-    PassBrute = "password_brute"
-    PassSpraying = "password_spraying"
-    ASReproasting = "as_reproasting"
-    GetSPN = "get_spn"
-    ConstrainedDelegate = "constrained_delegation"
-    PsExec = "ps_exec"
-    SmbExec = "smb_exec"
-    WmiExec = "wmi_exec"
-
-    # test
-    Test1 = "test1"
-    Test2 = "test2"
-    Test3 = "test3"
-
-
 # TODO 修改模块基类硬编码
 # TODO 修改模块名称为小写 -2
 module_base_class = {
