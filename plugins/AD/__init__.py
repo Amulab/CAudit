@@ -110,4 +110,9 @@ def parse_user_args(args: argparse.Namespace):
         lmhash = ''
         nthash = ''
 
-    return domain_fqdn, domain_name, args.dc_ip, lmhash, nthash
+    try:
+        dc_ip = args.dc_ip
+    except Exception:
+        dc_ip = args.target_ip
+
+    return domain_fqdn, domain_name, dc_ip, lmhash, nthash
