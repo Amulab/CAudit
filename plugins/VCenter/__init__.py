@@ -27,13 +27,13 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
     ad_sub_mode = parser.add_subparsers(dest="scan_type")
     scan_mode = ad_sub_mode.add_parser("scan", formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    scan_mode_group = scan_mode.add_mutually_exclusive_group(required=True)
-    scan_mode_group.add_argument("--all", help="select all plugins", action=argparse.BooleanOptionalAction, dest="all")
-    scan_mode_group.add_argument("--plugin", help="select one or more plugin (E.G. plugin name1, plugin name 2...)",
-                                 nargs="+", dest="plugins")
-    scan_mode.add_argument("-U", "--username", required=False, default=None, dest="username")
-    scan_mode.add_argument("-P", "--password", required=False, default=None, dest="password")
-    scan_mode.add_argument("-I", "--ip", required=False, default=None, dest="domain_ip")
+    # scan_mode_group = scan_mode.add_mutually_exclusive_group(required=True)
+    # scan_mode_group.add_argument("--all", help="select all plugins", action=argparse.BooleanOptionalAction, dest="all")
+    # scan_mode_group.add_argument("--plugin", help="select one or more plugin (E.G. plugin name1, plugin name 2...)",
+    #                              nargs="+", dest="plugins")
+    # scan_mode.add_argument("-U", "--username", required=False, default=None, dest="username")
+    # scan_mode.add_argument("-P", "--password", required=False, default=None, dest="password")
+    # scan_mode.add_argument("-I", "--ip", required=False, default=None, dest="domain_ip")
 
     exploit_mode = ad_sub_mode.add_parser("exploit", formatter_class=argparse.RawDescriptionHelpFormatter)
     exp_plugin_mode = exploit_mode.add_subparsers()
