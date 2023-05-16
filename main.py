@@ -139,4 +139,4 @@ if __name__ == '__main__':
 
     # 输出结果
     if user_args.scan_type == AllPluginTypes.Scan:
-        output.show_results(scripts_result)
+        output.show_results(scripts_result, user_args.scan_type)
