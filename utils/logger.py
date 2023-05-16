@@ -17,6 +17,7 @@ Example:
 
 from prettytable import PrettyTable
 from utils import module_base_class
+from utils.consts import AllPluginTypes
 
 
 def print_centralization_help():
@@ -143,7 +144,7 @@ class Output(BaseScreen):
                   f"{'':^4}scan\n"
                   f"{'':^4}exploit")
 
-    def show_results(self, results: dict) -> None:
+    def show_results(self, results: dict, scan_type) -> None:
         """
         以表格形式输出结果
         :param results: 收集的结果，字典
@@ -218,15 +219,16 @@ class Output(BaseScreen):
         # TODO scan打印结果过多就精简
         # TODO exploit 扫描结果着重标记（分割）
 
-        self.info("Attack chains:")
-        self.debug(f"get attack root chain node: {success_plugin_nodes}")
+        if scan_type == AllPluginTypes.Exploit:
+            self.info("Attack chains:")
+            self.debug(f"get attack root chain node: {success_plugin_nodes}")
 
-        from utils.attack_chain import AttackChains
+            from utils.attack_chain import AttackChains
 
-        a_chains = AttackChains()
-        for n in success_plugin_nodes:
-            a_chains.match(n)
-        a_chains.print_chains()
+            a_chains = AttackChains()
+            for n in success_plugin_nodes:
+                a_chains.match(n)
+            a_chains.print_chains()
 
         output.info(f"Total:\n"
                     f"{'':^4}Number of plugin executions: {total['total']}\n"

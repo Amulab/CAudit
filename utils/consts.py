@@ -17,8 +17,8 @@ PLUGIN_EXECUTE_ERROR = ScriptRunStatus("Error")
 # TODO 修改模块基类硬编码
 # TODO 修改模块名称为小写 -2
 module_base_class = {
-    "AD": ["PluginAdBase", "PluginADScanBase", "PluginAdExploitBase"],
-    "VCenter": ["PluginVCenterBase"],
+    "AD": ["PluginADScanBase", "PluginAdExploitBase"],
+    "VCenter": ["PluginVCenterBase", "PluginVCenterScanBase"],
     "Kubernetes": ["PluginKubernetesBase"],
     "Exchange": ["PluginExchangeBase"],
     "JumpServer": ["PluginJumpServerBase"]
