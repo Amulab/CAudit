@@ -21,7 +21,8 @@ module_base_class = {
     "VCenter": ["PluginVCenterBase", "PluginVCenterScanBase"],
     "Kubernetes": ["PluginKubernetesBase"],
     "Exchange": ["PluginExchangeBase"],
-    "JumpServer": ["PluginJumpServerBase"]
+    "JumpServer": ["PluginJumpServerBase"],
+    "Qz": ["PluginQizhiBase"]
 }
 
 
