@@ -3,6 +3,8 @@ import json
 import sys
 from argparse import ArgumentParser
 
+import oss2
+
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
 from utils.logger import output
@@ -103,3 +105,10 @@ class AliCloud:
         except Exception as error:
             output.error(error.message)
             return None
+
+    def listbuckets(self):
+        auth = oss2.Auth(self.access_key, self.secrets_key)
+        service = oss2.Service(auth, 'https://oss-cn-hangzhou.aliyuncs.com')
+
+        # 列举当前账号所有地域下的存储空间。
+        return service
