@@ -22,7 +22,9 @@ module_base_class = {
     "Kubernetes": ["PluginKubernetesBase"],
     "Exchange": ["PluginExchangeBase"],
     "JumpServer": ["PluginJumpServerBase"],
-    "Qz": ["PluginQizhiBase"]
+    "Qz": ["PluginQizhiBase"],
+    "Zabbix": ["PluginZabbixBase"],
+    "AliCloud": ["PluginAliCloudBase"]
 }
 
 
