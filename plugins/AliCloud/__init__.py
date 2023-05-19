@@ -147,24 +147,25 @@ class AliCloud:
             response = client.describe_instances_with_options(describe_instances_request, runtime)
             if response.body.total_count != 0:
                 for r in response.body.instances.instance:
-                    result_lists.append({
-                        "creation_time": r.creation_time,
-                        "description": r.description,
-                        "host_name": r.host_name,
-                        "instance_id": r.instance_id,
-                        "instance_name": r.instance_name,
-                        "osname": r.osname,
-                        "ostype": r.ostype,
-                        "region_id": r.region_id,
-                        "status": r.status,
-                        "ip_address": r.public_ip_address.ip_address
-                    })
+                    result_lists.append([
+                        r.creation_time,
+                        r.description,
+                        r.host_name,
+                        r.instance_id,
+                        r.instance_name,
+                        r.osname,
+                        r.ostype,
+                        r.region_id,
+                        r.status,
+                        r.public_ip_address.ip_address
+                    ])
             return result_lists
 
         except Exception as error:
             # 如有需要，请打印 error
-            output.error(error.message)
-            return None
+            if error.statusCode != 403:
+                output.error(error.message)
+            return []
 
     def listrds(self, region_id):
         self.config.endpoint = f'rds.aliyuncs.com'
