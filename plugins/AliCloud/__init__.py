@@ -119,7 +119,7 @@ class AliCloud:
         # 列举当前账号所有地域下的存储空间。
         return service
 
-    def getallregions(self):
+    def getallregions(self, raw=False):
         self.config.endpoint = f'ecs-cn-hangzhou.aliyuncs.com'
         client = Ecs20140526Client(self.config)
 
@@ -128,8 +128,12 @@ class AliCloud:
         try:
             # 复制代码运行请自行打印 API 的返回值
             response = client.describe_regions_with_options(describe_regions_request, runtime)
-            regions_ids = [x.region_id for x in response.body.regions.region]
-            return regions_ids
+
+            if raw:
+                return response.body.regions.region
+            else:
+                regions_ids = [x.region_id for x in response.body.regions.region]
+                return regions_ids
         except Exception as error:
             # 如有需要，请打印 error
             output.error(error.message)
