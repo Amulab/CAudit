@@ -1,6 +1,8 @@
 import argparse
+import base64
 import json
 import sys
+import time
 from argparse import ArgumentParser
 
 import oss2
@@ -190,9 +192,83 @@ class AliCloud:
                         "ZoneId": r.zone_id,
                         "Tips": r.tips,
                         "DBInstanceDescription": r.dbinstance_description,
-                        "DBInstanceStatus":r.dbinstance_status,
+                        "DBInstanceStatus": r.dbinstance_status,
                     })
             return result_lists
         except Exception as error:
             # 如有需要，请打印 error
             output.error(error.message)
+
+    def executecommand(self, instance_id, command, region_id, os_type="linux"):
+        command_id = None
+
+        # 创建command id
+        self.config.endpoint = f'ecs-cn-hangzhou.aliyuncs.com'
+        client = Ecs20140526Client(self.config)
+        runtime = util_models.RuntimeOptions()
+        instance_type = "RunShellScript"
+
+        if os_type == "windows":
+            instance_type = "RunBatScript"
+
+        try:
+            resp = client.create_command_with_options(
+                ecs_20140526_models.CreateCommandRequest(region_id=region_id, name='testName', type=instance_type,
+                                                         command_content=base64.b64encode(command.encode()).decode()),
+                runtime)
+
+            command_id = resp.body.command_id
+            output.debug(f"registry command: {command_id}")
+        except Exception as error:
+            # 如有需要，请打印 error
+            output.error(error.message)
+            return False
+
+        # 执行
+        execute_id = None
+        try:
+            output.info(f"{command}")
+
+            resp = client.invoke_command_with_options(
+                ecs_20140526_models.InvokeCommandRequest(region_id=region_id, command_id=command_id,
+                                                         instance_id=[instance_id]), runtime)
+            execute_id = resp.body.invoke_id
+            output.debug(f"execute command: {execute_id}")
+        except Exception as error:
+            # 如有需要，请打印 error
+            UtilClient.assert_as_string(error.message)
+            return False
+
+        # 获取结果
+        try:
+            get_results = False
+            while not get_results:
+                resp = client.describe_invocation_results_with_options(
+                    ecs_20140526_models.DescribeInvocationResultsRequest(
+                        region_id=region_id
+                    ), runtime)
+                for result in resp.body.invocation.invocation_results.invocation_result:
+                    if result.invoke_record_status == "Finished" and execute_id == result.invoke_id:
+                        output.success(base64.b64decode(result.output).decode())
+                        get_results = True
+                        break
+                time.sleep(1)
+        except Exception as error:
+            # 如有需要，请打印 error
+            UtilClient.assert_as_string(error.message)
+            return False
+
+        # 删除command id
+        output.debug(f"delete command: {command_id}")
+
+        try:
+            # 复制代码运行请自行打印 API 的返回值
+            resp = client.delete_command_with_options(ecs_20140526_models.DeleteCommandRequest(
+                region_id=region_id,
+                command_id=command_id
+            ), runtime)
+            if resp.status_code == 200:
+                output.debug("deleted")
+        except Exception as error:
+            # 如有需要，请打印 error
+            UtilClient.assert_as_string(error.message)
