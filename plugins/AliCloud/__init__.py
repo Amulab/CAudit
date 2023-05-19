@@ -15,6 +15,8 @@ from alibabacloud_ecs20140526 import models as ecs_20140526_models
 from alibabacloud_ram20150501.client import Client as Ram20150501Client
 from alibabacloud_sts20150401.client import Client as Sts20150401Client
 from alibabacloud_ecs20140526.client import Client as Ecs20140526Client
+from alibabacloud_rds20140815.client import Client as Rds20140815Client
+from alibabacloud_rds20140815 import models as rds_20140815_models
 from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_tea_util.client import Client as UtilClient
 from alibabacloud_tea_util import models as util_models
@@ -145,7 +147,7 @@ class AliCloud:
                 for r in response.body.instances.instance:
                     result_lists.append({
                         "creation_time": r.creation_time,
-                        "description":r.description,
+                        "description": r.description,
                         "host_name": r.host_name,
                         "instance_id": r.instance_id,
                         "instance_name": r.instance_name,
@@ -161,3 +163,36 @@ class AliCloud:
             # 如有需要，请打印 error
             output.error(error.message)
             return None
+
+    def listrds(self, region_id):
+        self.config.endpoint = f'rds.aliyuncs.com'
+        client = Rds20140815Client(self.config)
+
+        describe_dbinstances_request = rds_20140815_models.DescribeDBInstancesRequest(region_id=region_id)
+        runtime = util_models.RuntimeOptions()
+        try:
+            result_lists = []
+            # 复制代码运行请自行打印 API 的返回值
+            resp = client.describe_dbinstances_with_options(describe_dbinstances_request, runtime)
+
+            if resp.body.page_record_count != 0:
+                for r in resp.body.items.dbinstance:
+                    result_lists.append({
+                        "RegionId": r.region_id,
+                        "VpcId": r.vpc_id,
+                        "VpcName": r.vpc_name,
+                        "CreateTime": r.create_time,
+                        "Engine": r.engine,
+                        "EngineVersion": r.engine_version,
+                        "DedicatedHostZoneIdForMaster": r.dedicated_host_zone_id_for_master,
+                        "ConnectionString": r.connection_string,
+                        "MasterInstanceId": r.master_instance_id,
+                        "ZoneId": r.zone_id,
+                        "Tips": r.tips,
+                        "DBInstanceDescription": r.dbinstance_description,
+                        "DBInstanceStatus":r.dbinstance_status,
+                    })
+            return result_lists
+        except Exception as error:
+            # 如有需要，请打印 error
+            output.error(error.message)
