@@ -11,11 +11,13 @@ from utils.logger import output
 from Tea.core import TeaCore
 
 from alibabacloud_ram20150501 import models as ram_20150501_models
+from alibabacloud_ecs20140526 import models as ecs_20140526_models
 from alibabacloud_ram20150501.client import Client as Ram20150501Client
+from alibabacloud_sts20150401.client import Client as Sts20150401Client
+from alibabacloud_ecs20140526.client import Client as Ecs20140526Client
 from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_tea_util.client import Client as UtilClient
 from alibabacloud_tea_util import models as util_models
-from alibabacloud_sts20150401.client import Client as Sts20150401Client
 
 # 模块类型
 __type__ = "AliCloud"
@@ -112,3 +114,50 @@ class AliCloud:
 
         # 列举当前账号所有地域下的存储空间。
         return service
+
+    def getallregions(self):
+        self.config.endpoint = f'ecs-cn-hangzhou.aliyuncs.com'
+        client = Ecs20140526Client(self.config)
+
+        describe_regions_request = ecs_20140526_models.DescribeRegionsRequest()
+        runtime = util_models.RuntimeOptions()
+        try:
+            # 复制代码运行请自行打印 API 的返回值
+            response = client.describe_regions_with_options(describe_regions_request, runtime)
+            regions_ids = [x.region_id for x in response.body.regions.region]
+            return regions_ids
+        except Exception as error:
+            # 如有需要，请打印 error
+            output.error(error.message)
+            return None
+
+    def listecs(self, region_id):
+        self.config.endpoint = f'ecs-cn-hangzhou.aliyuncs.com'
+        client = Ecs20140526Client(self.config)
+
+        describe_instances_request = ecs_20140526_models.DescribeInstancesRequest(region_id=region_id)
+        runtime = util_models.RuntimeOptions()
+        try:
+            result_lists = []
+            # 复制代码运行请自行打印 API 的返回值
+            response = client.describe_instances_with_options(describe_instances_request, runtime)
+            if response.body.total_count != 0:
+                for r in response.body.instances.instance:
+                    result_lists.append({
+                        "creation_time": r.creation_time,
+                        "description":r.description,
+                        "host_name": r.host_name,
+                        "instance_id": r.instance_id,
+                        "instance_name": r.instance_name,
+                        "osname": r.osname,
+                        "ostype": r.ostype,
+                        "region_id": r.region_id,
+                        "status": r.status,
+                        "ip_address": r.public_ip_address.ip_address
+                    })
+            return result_lists
+
+        except Exception as error:
+            # 如有需要，请打印 error
+            output.error(error.message)
+            return None
