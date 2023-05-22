@@ -138,3 +138,35 @@ class TencentAPi:
 
         except TencentCloudSDKException as err:
             output.error(err)
+
+    def get_cvm_instance(self, region):
+        regions = []
+        if isinstance(region,str):
+            regions.append(region)
+        else:
+            regions = region
+
+        results = []
+
+        for r in regions:
+            try:
+                httpProfile = HttpProfile()
+                httpProfile.endpoint = "cvm.tencentcloudapi.com"
+
+                clientProfile = ClientProfile()
+                clientProfile.httpProfile = httpProfile
+                client = v20170312_cvm_client.CvmClient(self.cred, r.Region, clientProfile)
+
+                req = v20170312_models.DescribeInstancesRequest()
+                params = {}
+                req.from_json_string(json.dumps(params))
+
+                output.debug(f"searching {r.Region}")
+
+                resp = client.DescribeInstances(req)
+                if len(resp.InstanceSet) != 0:
+                    for x in resp.InstanceSet:
+                        results.append(x)
+            except TencentCloudSDKException as err:
+                print(err)
+        return results
