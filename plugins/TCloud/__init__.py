@@ -10,6 +10,8 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.sts.v20180813 import sts_client as v20180813_sts_client, models as v20180813_modules
 from tencentcloud.cam.v20190116 import cam_client as v20190116_cam_client, models as v20190116_modules
 from tencentcloud.cvm.v20170312 import cvm_client as v20170312_cvm_client, models as v20170312_models
+from tencentcloud.lighthouse.v20200324 import lighthouse_client as v20200324_lighthouse_client, \
+    models as v20200324_models
 
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
@@ -141,7 +143,7 @@ class TencentAPi:
 
     def get_cvm_instance(self, region):
         regions = []
-        if isinstance(region,str):
+        if isinstance(region, str):
             regions.append(region)
         else:
             regions = region
@@ -169,4 +171,38 @@ class TencentAPi:
                         results.append(x)
             except TencentCloudSDKException as err:
                 print(err)
+        return results
+
+    def get_lh_instance(self, region):
+        regions = []
+        if isinstance(region, str):
+            regions.append(region)
+        else:
+            regions = region
+
+        results = []
+
+        for r in regions:
+            try:
+                httpProfile = HttpProfile()
+                httpProfile.endpoint = "lighthouse.tencentcloudapi.com"
+
+                clientProfile = ClientProfile()
+                clientProfile.httpProfile = httpProfile
+                client = v20200324_lighthouse_client.LighthouseClient(self.cred, r.Region, clientProfile)
+
+                req = v20200324_models.DescribeInstancesRequest()
+                params = {}
+                req.from_json_string(json.dumps(params))
+
+                output.debug(f"searching {r.RegionName}")
+
+                resp = client.DescribeInstances(req)
+                if len(resp.InstanceSet) != 0:
+                    for x in resp.InstanceSet:
+                        results.append(x)
+
+            except TencentCloudSDKException as err:
+                if err.args[0] != "UnsupportedRegion":
+                    output.error(err)
         return results
