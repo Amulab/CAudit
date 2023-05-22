@@ -9,6 +9,7 @@ from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.sts.v20180813 import sts_client as v20180813_sts_client, models as v20180813_modules
 from tencentcloud.cam.v20190116 import cam_client as v20190116_cam_client, models as v20190116_modules
+from tencentcloud.cvm.v20170312 import cvm_client as v20170312_cvm_client, models as v20170312_models
 
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
@@ -70,6 +71,25 @@ class TencentAPi:
 
         self.cred = credential.Credential(self.secret_id, self.secret_key)
 
+    def get_all_regions(self):
+        try:
+            httpProfile = HttpProfile()
+            httpProfile.endpoint = "cvm.tencentcloudapi.com"
+
+            clientProfile = ClientProfile()
+            clientProfile.httpProfile = httpProfile
+            client = v20170312_cvm_client.CvmClient(self.cred, "", clientProfile)
+
+            req = v20170312_models.DescribeRegionsRequest()
+            params = {}
+            req.from_json_string(json.dumps(params))
+
+            resp = client.DescribeRegions(req)
+            return resp.RegionSet
+
+        except TencentCloudSDKException as err:
+            print(err)
+
     def get_caller_identity(self):
         cred = credential.Credential(self.secret_id, self.secret_key)
         user_id = None
@@ -92,7 +112,7 @@ class TencentAPi:
             output.debug(f"get UserID: {resp.UserId}")
             user_id = int(resp.UserId)
         except TencentCloudSDKException as err:
-            print(err)
+            output.error(err)
 
         try:
             # 实例化一个http选项，可选的，没有特殊需求可以跳过
@@ -117,4 +137,4 @@ class TencentAPi:
             return resp.List
 
         except TencentCloudSDKException as err:
-            print(err)
+            output.error(err)
