@@ -24,7 +24,8 @@ module_base_class = {
     "JumpServer": ["PluginJumpServerBase"],
     "Qz": ["PluginQizhiBase"],
     "Zabbix": ["PluginZabbixBase"],
-    "AliCloud": ["PluginAliCloudBase"]
+    "AliCloud": ["PluginAliCloudBase"],
+    "TCloud": ["PluginTencentCloudBase"]
 }
 
 
