@@ -212,7 +212,7 @@ class TencentAPi:
                     output.error(err)
         return results
 
-    def execute_command(self, region, instance_id, os_type, command):
+    def lh_execute_command(self, region, instance_id, os_type, command):
         command_type = "SHELL"
 
         if os_type == "windows":
@@ -305,3 +305,6 @@ class TencentAPi:
             output.error(err)
 
         return command_result_base64
+
+    def get_lh_meta_data(self):
+        pass
