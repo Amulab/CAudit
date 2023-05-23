@@ -1,6 +1,10 @@
 import argparse
+import base64
 import json
+import random
+import string
 import sys
+import time
 from argparse import ArgumentParser
 
 from tencentcloud.common import credential
@@ -12,6 +16,7 @@ from tencentcloud.cam.v20190116 import cam_client as v20190116_cam_client, model
 from tencentcloud.cvm.v20170312 import cvm_client as v20170312_cvm_client, models as v20170312_models
 from tencentcloud.lighthouse.v20200324 import lighthouse_client as v20200324_lighthouse_client, \
     models as v20200324_models
+from tencentcloud.tat.v20201028 import tat_client as v20201028_tat_client, models as v20201028_models
 
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
@@ -90,7 +95,7 @@ class TencentAPi:
             return resp.RegionSet
 
         except TencentCloudSDKException as err:
-            print(err)
+            output.error(err)
 
     def get_caller_identity(self):
         cred = credential.Credential(self.secret_id, self.secret_key)
@@ -170,7 +175,7 @@ class TencentAPi:
                     for x in resp.InstanceSet:
                         results.append(x)
             except TencentCloudSDKException as err:
-                print(err)
+                output.error(err)
         return results
 
     def get_lh_instance(self, region):
@@ -206,3 +211,97 @@ class TencentAPi:
                 if err.args[0] != "UnsupportedRegion":
                     output.error(err)
         return results
+
+    def execute_command(self, region, instance_id, os_type, command):
+        command_type = "SHELL"
+
+        if os_type == "windows":
+            command_type = "POWERSHELL"
+
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = "tat.tencentcloudapi.com"
+
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+
+        # 创建命令
+        try:
+            client = v20201028_tat_client.TatClient(self.cred, region, clientProfile)
+
+            req = v20201028_models.CreateCommandRequest()
+            params = {
+                "CommandName": ''.join(random.sample(string.ascii_letters + string.digits, 5)),
+                "CommandType": command_type,
+                "Content": base64.b64encode(command.encode()).decode()
+            }
+            req.from_json_string(json.dumps(params))
+
+            resp = client.CreateCommand(req)
+            command_id = resp.CommandId
+
+            output.debug(f"get command id: {command_id}")
+        except TencentCloudSDKException as err:
+            output.error(err)
+            return False
+
+        # 触发命令
+        try:
+            client = v20201028_tat_client.TatClient(self.cred, region, clientProfile)
+
+            req = v20201028_models.InvokeCommandRequest()
+            params = {
+                "CommandId": command_id,
+                "InstanceIds": [instance_id]
+            }
+            req.from_json_string(json.dumps(params))
+
+            resp = client.InvokeCommand(req)
+            invocation_id = resp.InvocationId
+            output.debug(f"get invocation id: {invocation_id}")
+        except TencentCloudSDKException as err:
+            output.error(err)
+            return False
+
+        # 获取命令结果
+        command_result_base64 = ""
+        try:
+            clientProfile = ClientProfile()
+            clientProfile.httpProfile = httpProfile
+            client = v20201028_tat_client.TatClient(self.cred, region, clientProfile)
+
+            req = v20201028_models.DescribeInvocationTasksRequest()
+            params = {
+                "HideOutput": False
+            }
+            req.from_json_string(json.dumps(params))
+            resp = client.DescribeInvocationTasks(req)
+
+            get_resulted = False
+            while not get_resulted:
+                if resp.InvocationTaskSet[0].CommandId == command_id:
+                    output.debug(f"get command base64 string:\n\n"
+                                 f"{resp.InvocationTaskSet[0].TaskResult.Output}\n")
+                    command_result_base64 = resp.InvocationTaskSet[0].TaskResult.Output
+                    get_resulted = True
+                else:
+                    time.sleep(1)
+        except TencentCloudSDKException as err:
+            output.error(err)
+            return False
+
+        # 删除命令
+        try:
+            client = v20201028_tat_client.TatClient(self.cred, region, clientProfile)
+
+            req = v20201028_models.DeleteCommandRequest()
+            params = {"CommandId": command_id}
+            req.from_json_string(json.dumps(params))
+
+            resp = client.DeleteCommand(req)
+            if resp.headers is None:
+                output.debug(f"success delete {command_id}")
+
+        except TencentCloudSDKException as err:
+            output.error(err)
+
+        return command_result_base64
