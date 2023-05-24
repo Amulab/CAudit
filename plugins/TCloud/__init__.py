@@ -306,5 +306,19 @@ class TencentAPi:
 
         return command_result_base64
 
-    def get_lh_meta_data(self):
-        pass
+    # def get_lh_meta_data(self, region, instance_id, os_type):
+    #     command = "curl -s http://metadata.tencentyun.com/latest/meta-data/cam/security-credentials/"
+    #
+    #     if os_type == "windows":
+    #         command = "Invoke-RestMethod http://metadata.tencentyun.com/latest/meta-data/cam/security-credentials/"
+    #
+    #     command_result_b64 = self.lh_execute_command(region,instance_id,os_type, command)
+    #     if command_result_b64:
+    #         command_result = base64.b64decode(command_result_b64).decode()
+    #     else:
+    #         return False
+    #
+    #     if "404 - Not Found" in command_result:
+    #         return "STS Token not found"
+    #     else:
+    #         pass
