@@ -8,6 +8,7 @@ from datetime import datetime
 
 import oss2
 
+from modules import convert_size
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
 from utils.logger import output
@@ -71,15 +72,6 @@ class PluginAliCloudBase(PluginBase):
 
     def __init__(self):
         super().__init__()
-
-
-def convert_size(raw):
-    units = ["B", "KB", "MB", "GB", "TB", "PB"]
-    size = 1024
-    for i in range(len(units)):
-        if raw / size < 1:
-            return "%.2f%s" % (raw, units[i])
-        raw = raw / size
 
 
 class AliCloud:

@@ -7,6 +7,7 @@ import sys
 import time
 from argparse import ArgumentParser
 
+from qcloud_cos import CosConfig, CosS3Client
 from tencentcloud.common import credential
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
@@ -18,6 +19,7 @@ from tencentcloud.lighthouse.v20200324 import lighthouse_client as v20200324_lig
     models as v20200324_models
 from tencentcloud.tat.v20201028 import tat_client as v20201028_tat_client, models as v20201028_models
 
+from modules import convert_size
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
 from utils.logger import output
@@ -96,6 +98,26 @@ class TencentAPi:
 
         except TencentCloudSDKException as err:
             output.error(err)
+
+    def list_oss_objects(self, region, bucket_name):
+        scheme = 'https'
+        results = []
+
+        config = CosConfig(Region=region, SecretId=self.secret_id, SecretKey=self.secret_key, Scheme=scheme)
+        client = CosS3Client(config)
+
+        response = client.list_objects(Bucket=bucket_name)
+        if 'Contents' in response:
+            for content in response['Contents']:
+                size = convert_size(int(content["Size"]))
+
+                url = client.get_object_url(Bucket=bucket_name, Key=content["Key"])
+
+                if size == "0.00B":
+                    results.append([content["Key"], content["LastModified"], "", ""])
+                else:
+                    results.append([content["Key"], content["LastModified"], size, url])
+        return results
 
     def get_caller_identity(self):
         cred = credential.Credential(self.secret_id, self.secret_key)
