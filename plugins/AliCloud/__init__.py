@@ -4,6 +4,7 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
+from datetime import datetime
 
 import oss2
 
@@ -72,6 +73,15 @@ class PluginAliCloudBase(PluginBase):
         super().__init__()
 
 
+def convert_size(raw):
+    units = ["B", "KB", "MB", "GB", "TB", "PB"]
+    size = 1024
+    for i in range(len(units)):
+        if raw / size < 1:
+            return "%.2f%s" % (raw, units[i])
+        raw = raw / size
+
+
 class AliCloud:
     def __init__(self, ak, sk):
         self.access_key = ak
@@ -118,6 +128,24 @@ class AliCloud:
 
         # 列举当前账号所有地域下的存储空间。
         return service
+
+    def listbucketobjects(self, region, bucket_name):
+        results = []
+
+        auth = oss2.Auth(self.access_key, self.secrets_key)
+        bucket = oss2.Bucket(auth, f"https://oss-{region}.aliyuncs.com", bucket_name)
+        object_results = bucket.list_objects_v2()
+        for o in object_results.object_list:
+            size = convert_size(o.size)
+            key_url = f"https://{bucket_name}.oss-{region}.aliyuncs.com/{o.key}"
+
+            if size == "0.00B":
+                results.append([o.key, "", datetime.fromtimestamp(o.last_modified), ""])
+            else:
+                results.append([o.key, size, datetime.fromtimestamp(o.last_modified), key_url])
+
+
+        return results
 
     def getallregions(self, raw=False):
         self.config.endpoint = f'ecs-cn-hangzhou.aliyuncs.com'
