@@ -233,16 +233,6 @@ def target_creds_type(target):
     return (userdomain, username, password or '', '')
 
 
-# def main():
-#     main_list("test16.local","administrator","zawx@2022","192.168.16.249")
-# args = parse_args()
-
-# if args.command == "list":
-#     return main_list(args)
-# elif args.command == "req":
-#     return main_req(args)
-
-
 def main_req(args):
     print("[*] Service: {}".format(args.service))
     print("[*] Template: {}".format(args.template))

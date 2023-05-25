@@ -4,6 +4,8 @@ import sys
 from concurrent.futures import wait, ALL_COMPLETED
 from importlib import import_module
 
+from prettytable import PrettyTable
+
 import utils
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
@@ -35,6 +37,33 @@ def load_module_param(mod_name, exploit_plugin_name, all_module_plugins):
     # 获取参数
     args = parser.parse_args()
     return args
+
+
+def check_print_help(m_name, p_list):
+    if "--list" not in sys.argv:
+        return False
+
+    plugin_type = "all"
+    if sys.argv[sys.argv.index(m_name)+1] == "scan":
+        plugin_type = "scan"
+    elif sys.argv[sys.argv.index(m_name)+1] == "exploit":
+        plugin_type = "exploit"
+
+    print_plugin = PrettyTable(["alias", "display"])
+    print_plugin.align["alias"] = "l"
+    print_plugin.align["display"] = "l"
+    print_plugin.border = False
+    for k, v in p_list.items():
+        if plugin_type == "all":
+            print_plugin.add_row([v.alias, v.display])
+        else:
+            if v.p_type == plugin_type:
+                print_plugin.add_row([v.alias, v.display])
+
+    output.info(f"show {plugin_type} plugin:\n"
+                f"{print_plugin}")
+    return True
+
 
 
 def check_program_help():
@@ -71,6 +100,10 @@ if __name__ == '__main__':
     if len(p_list.keys()) == 0:
         output.success("No plugin loaded")
         sys.exit(1)
+
+    # 是否只打印插件信息
+    if check_print_help(m_name, p_list):
+        sys.exit(0)
 
     # 加载模块参数
     exploit_plugin_name = utils.get_user_exploit_input()

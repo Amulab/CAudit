@@ -54,36 +54,3 @@ class PluginADExistSID(PluginADScanBase):
         sub_ids = [struct.unpack('<I', sid[8 + 4 * i:12 + 4 * i])[0]
                    for i in range(number_of_sub_ids)]
         return 'S-{0}-{1}-{2}'.format(revision, iav, '-'.join([str(sub_id) for sub_id in sub_ids]))
-
-
-
-if __name__ == '__main__':
-    dc_conf = {
-        'ldap_conf': {
-            'dn': 'DC=test12,DC=local',
-            'password': 'zawx@2022',
-            'user': 'Administrator@test12.local',
-            'DNS': '192.168.12.249',
-            'server': 'ldap://DC01.test12.local'
-        },
-        'name': 'test12.local',
-        'ip': '192.168.12.249',
-        'hostname': 'DC01',
-        'fqdn': 'DC01.test12.local',
-        'platform': 'Windows Server 2016 Datacenter'
-    }
-    meta_data = {'port': '445', 'key2': 'value2'}
-    env = {
-        'redis_conf': {
-            'uri': 'redis://:XVMhPmZIAfiwc4k4ZQ@192.168.30.167:6379/0'
-        },
-        'mongo_conf': {
-            'host': '192.168.30.167:27017',
-            'password': 'Aqm3GzSaw2dYABncD',
-            'user': 'user_adm',
-            'db_name': 'db_adm'
-        }
-    }
-    plugin = Plugin(dc_conf, meta_data, env)
-    #print(plugin.info)
-    print(plugin.verify())
