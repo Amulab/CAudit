@@ -30,3 +30,4 @@ oss2~=2.17.0
 tldextract~=3.4.1
 pypsrp~=0.8.1
 requests-ntlm
+dsinternals~=1.2.4
