@@ -43,4 +43,4 @@ alibabacloud-tea-util~=0.3.8
 alibabacloud-tea-xml~=0.0.2
 aliyun-python-sdk-core~=2.13.36
 aliyun-python-sdk-kms~=2.16.0
-tencentcloud-sdk-python~=3.0.895
+tencentcloud-sdk-python
