@@ -173,7 +173,7 @@ class LDAPSearch(object):
                                                                 get_operational_attributes=True,
                                                                 attributes=attributes,
                                                                 paged_size=1000,
-                                                                controls=controls,
+                                                                controls=security_descriptor_control(sdflags=0x04),
                                                                 generator=True)
 
         impacket.ldap.ldaptypes.RECALC_ACL_SIZE = False
