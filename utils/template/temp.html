@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<meta http-equiv="Content-Type" content="text/html"; charset="gbk">
-
+<html>
 <head>
 
     <title>Centralization Report</title>
@@ -9,149 +7,150 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-        }
-
-        .result {
-            margin-bottom: 24px;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .result caption {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .result th, .result td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .result th {
-            background-color: #eee;
-        }
-
-        .result td ul {
-            list-style: none;
+            background-color: #f7f7f7;
             margin: 0;
             padding: 0;
         }
 
-        .result td li {
-            margin-bottom: 4px;
+        .header {
+            background-color: #66cc99;
+            padding: 20px;
+            text-align: center;
         }
 
-        .result td li strong {
-            display: inline-block;
-            width: 60px;
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+            margin: 0;
         }
 
-        .like-table {
-            margin-top: 8px;
-            border-collapse: collapse;
-            width: 100%;
-            display: none;
+        .scan-container {
+            margin: 20px auto;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
 
-        .like-table.show {
-            display: table;
-        }
-
-        .like-table th,
-        .like-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-            white-space: nowrap; /* prevent table from breaking */
-        }
-
-        .like-table th {
-            background-color: #eee;
-        }
-
-        .toggle-button {
-            border: none;
-            background-color: transparent;
+        .scan-title {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
             cursor: pointer;
-            font-size: 20px;
-            margin-right: 8px;
         }
 
-        .toggle-button:focus {
-            outline: none;
+        .scan-title:hover {
+            color: #66cc99;
         }
 
-        .toggle-button::before {
-            content: "+";
+        .scan-content {
+            display: none;
+            padding: 10px 0;
         }
 
-        .like-table-container.shown .toggle-button::before {
-            content: "-";
+        .scan-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .scan-content th,
+        .scan-content td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .scan-content th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .scan-content tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+            animation-iteration-count: 2;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px) rotate(-5deg);
+            }
+            50% {
+                transform: translateX(5px) rotate(5deg);
+            }
+            75% {
+                transform: translateX(-5px) rotate(-5deg);
+            }
+            100% {
+                transform: translateX(0);
+            }
         }
     </style>
-</head>
-
-<body>
-    {% for key, value in data.items() %}
-    <table class="result">
-        <tbody>
-            <tr>
-                <th style="width: 25%;">插件脚本</th>
-                <th style="width: 25%;">别名</th>
-                <th style="width: 25%;">描述</th>
-                <th style="width: 25%;">结果</th>
-            </tr>
-            <tr>
-                <td>{{ key }}</td>
-                <td>{{ value.alias }}</td>
-                <td>{{ value.display }}</td>
-                <td style="width: 20px;">
-                    <div class="like-table-container">
-                        <button class="toggle-button"></button>
-                        <table class="like-table">
-                            <thead>
-                                <tr>
-                                    {% for k in value.results.data["instance_list"][0].keys() %}
-                                    <th>{{ k }}</th>
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ins_list in value.results.data["instance_list"] %}
-                                <tr>
-                                    {% for k, v in ins_list.items() %}
-                                    <td>{{ v }}</td>
-                                    {% endfor %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    {% endfor %}
     <script>
-        const toggleButtons = document.querySelectorAll(".toggle-button");
-        toggleButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-                const container = button.parentElement;
-                const table = container.querySelector(".like-table");
-                if (container.classList.contains("shown")) {
-                    container.classList.remove("shown");
-                    table.classList.remove("show");
-                } else {
-                    container.classList.add("shown");
-                    table.classList.add("show");
-                }
-            });
-        });
-    </script>
-</body>
+        function toggleContent(elementId) {
+            var content = document.getElementById(elementId);
+            var title = document.getElementById("title_" + elementId);
 
+            if (content.style.display === "none") {
+                content.style.display = "block";
+                title.classList.add("shake");
+                setTimeout(function () {
+                    title.classList.remove("shake");
+                }, 500);
+            } else {
+                content.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="header">
+    <img class="logo" src="/Users/syndra/Desktop/22.png" alt="Logo">
+</div>
+
+<div class="scan-container">
+    {% for key, value in data.items() %}
+    <div class="scan-title" id="title_{{ key }}" onclick="toggleContent('{{ key }}')">
+        <span>{{ value.display }} + </span>
+    </div>
+    <div class="scan-content" id="{{ key }}">
+        <table>
+            <thead>
+            <tr>
+                {% for k in value.results.data["instance_list"][0].keys() %}
+                <th>{{ k }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for ins_list in value.results.data["instance_list"] %}
+            <tr>
+                {% for k, v in ins_list.items() %}
+                <td>{{ v }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+</div>
+</body>
 </html>
