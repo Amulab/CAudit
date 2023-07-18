@@ -20,42 +20,6 @@ class Base(object):
 
     def __init__(self, dc_conf, meta_data, env):
         """
-        TODO 删除不必要注释
-        dc_conf:
-        {
-            'ldap_conf': {
-                'dn': 'DC=spark,DC=com',
-                'password': 'Zawx@2023',
-                'user': 'spark\\Administrator',
-                'DNS': '192.168.31.84',
-                'server': 'ldap://test-computer.spark.com'
-            },
-            'name': 'spark.com',
-            'ip': '192.168.31.84',
-            'hostname': 'TEST-COMPUTER',
-            'fqdn': 'TEST-COMPUTER.spark.com',
-            'platform': 'Windows Server 2012 R2 Datacenter'
-        }
-
-        meta_data:
-        {
-            'port': '445',
-            'key2': 'value2'
-        }
-
-        env:
-        {
-            'redis_conf': {
-                'uri': 'redis://:XVMhPmZIAfiwc4k4ZQ@192.168.30.167:6379/0'
-            },
-           'mongo_conf': {
-                'host': '192.168.30.167:27017',
-                'password': 'Aqm3GzSaw2dYABncD',
-                'user': 'user_adm',
-                'db_name': 'db_adm'
-            }
-        }
-
         :param dc_conf: 域控详细信息
         :param meta_data: 插件元信息
         :param env: 环境配置信息 包含redis mongo 连接信息
