@@ -200,7 +200,10 @@ class Output(BaseScreen):
                 if len(result_value)> 50:
                     result_value = "..."
                 result_table.add_row([plugin_name, v["display"], status, result_value.strip()])
-                html_template_data[plugin_name] = v
+
+                # html只显示成功的结果
+                if status == "Success" and len(v["results"]["data"]["instance_list"]) > 0:
+                    html_template_data[plugin_name] = v
 
             # 添加攻击链节点
             if status == "Success":
