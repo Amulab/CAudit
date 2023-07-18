@@ -33,7 +33,7 @@ class PluginADPrivilageAccountNumberGT50(PluginADScanBase):
             paged_size=1000,
             generator=True)
         aq = []
-        for entry in entry_generator2:
+        for entry in entry_generator2:# 查询所有账户
             if entry["type"] != "searchResEntry":
                 continue
             flag = str(entry["attributes"]["cn"]).find("HealthMailbox")  # HealthMailbox是exchange相关账户
@@ -45,6 +45,7 @@ class PluginADPrivilageAccountNumberGT50(PluginADScanBase):
             aq.append(ss)
 
         for entry in entry_generator:
+            print(entry)
             if entry["type"] != "searchResEntry":
                 continue
             instance = {}
@@ -57,7 +58,7 @@ class PluginADPrivilageAccountNumberGT50(PluginADScanBase):
             result['status'] = 1
             result['data'] = {"instance_list": instance_list}
         # elif len(instance_list) >= len(aq) * 0.05:
-        elif len(instance_list) >= len(aq) * 5 // 100:  # 之前写的时候没考虑到小数的问题，修改了一下，向下取整
+        elif len(instance_list) > len(aq) * 5 // 100:  # 之前写的时候没考虑到小数的问题，修改了一下，向下取整
             result['status'] = 1
             result['data'] = {"instance_list": instance_list}
         return result
