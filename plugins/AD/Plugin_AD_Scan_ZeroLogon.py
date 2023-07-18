@@ -10,7 +10,7 @@ class PluginADZeroLogon(PluginADScanBase):
     Zerologon漏洞扫描
     """
 
-    display = "Zerologon漏洞扫描"
+    display = "存在Zerologon漏洞"
     alias = "zero_lgn"
     p_type = AllPluginTypes.Scan
 

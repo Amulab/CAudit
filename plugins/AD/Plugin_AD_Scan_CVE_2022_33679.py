@@ -19,7 +19,7 @@ class PluginADCVE_2022_33679(PluginADScanBase):
     CVE-2022-33679
     """
 
-    display = "CVE-2022-33679"
+    display = "存在CVE-2022-33679漏洞"
     alias = "cve_2022_33679"
     p_type = AllPluginTypes.Scan
 
