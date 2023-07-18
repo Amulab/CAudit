@@ -136,7 +136,7 @@ class PluginADAuditDCDis(PluginADScanBase):
                                         result['data'] = {"instance_list": instance_list}
 
             searchdirs = next_dirs
-            output.debug('Next iteration with %d folders.' % len(next_dirs))
+            # output.debug('Next iteration with %d folders.' % len(next_dirs))
         result['data'] = {"instance_list": instance_list}
         return result
 
@@ -170,10 +170,7 @@ class PluginADAuditDCDis(PluginADScanBase):
         else:
             output.debug("SMBv3.0 dialect used")
         smbClient.login(username, password, domain, lmhash, nthash)
-        if smbClient.isGuestSession() > 0:
-            output.debug("GUEST Session Granted")
-        else:
-            output.debug("USER Session Granted")
+
         return smbClient
 
 

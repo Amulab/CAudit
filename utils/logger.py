@@ -2,6 +2,7 @@ import logging
 
 import colorama
 import colorlog
+import jinja2
 from colorama import Fore
 
 __doc__ = """
@@ -24,14 +25,11 @@ def print_centralization_help():
     from utils import read_version
 
     print(f"""
-bannerbannerbanner
-bannerbannerbanner
-bannerbannerbanner
-               {read_version()}
     
 {output.RED}全局参数{output.RESET}
     --debug    开启调试模式
     --thread   设置线程数(scan 模式下生效)
+    --save     结果保存文件名
     
 {output.RED}可用模块{output.RESET}:
     {'':^4}{output.YELLOW}{' '.join(module_base_class.keys())}{output.RESET}
@@ -67,6 +65,8 @@ bannerbannerbanner
             {output.GREEN}./main.py AD exploit kerb_ue -h{output.RESET}
         使用全部扫描插件
             {output.GREEN}./main.py AD scan --all -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com{output.RESET}
+        使用全部扫描插件,并指定线程, 保存结果到文件
+            {output.GREEN}./main.py --thread 50 --save ad_result.html AD scan --all -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com{output.RESET}
         使用指定的扫描插件
             {output.GREEN}./main.py AD scan --plugin no_recycle_bin_dc nver_expire_priv_act -D dc.test.lab --dc-ip 20.0.0.100 -U administrator -P 123.com{output.RESET}
 """)
@@ -130,6 +130,7 @@ class BaseScreen:
 class Output(BaseScreen):
     def __init__(self):
         super().__init__(fmt='%(message)s')
+        self.save = "results.html"
         self.isDebug = False
 
     def print_simple_help(self, mod=""):
@@ -163,6 +164,8 @@ class Output(BaseScreen):
             "e_count":0
         }
 
+        html_template_data = {}
+
         result_table = PrettyTable(title)
         # 设置对齐
         result_table.align["Plugin Name"] = "l"
@@ -174,12 +177,11 @@ class Output(BaseScreen):
 
         for plugin_name, v in results.items():
 
-            # TODO results可能为string，插件报错
             status = "Failed"
             try:
                 status = run_status_string[v["results"]["status"]]
             except TypeError as e:
-                output.debug(f"print failed: {e}")
+                total["e_count"] += 1
 
             if status != "Failed":
                 # 记录成功和错误结果
@@ -187,7 +189,7 @@ class Output(BaseScreen):
                 try:
                     for ins in v["results"]["data"]["instance_list"]:
                         for k, val in ins.items():
-                            # TODO 将结果加到HTML报告, xray html 模板
+
                             result_value += f"{k}: {str(val)}\n"
                 except TypeError:
                     status = run_status_string[-1]
@@ -195,11 +197,10 @@ class Output(BaseScreen):
                 except KeyError:
                     result_value = str(v["results"]["error"])
 
-                # if len(result_value) > 40:
-                #     # 自动换行
-                #     result_table.add_row([plugin_name, v["display"], status, fill(result_value.strip(), width=40)])
-                # else:
+                if len(result_value)> 50:
+                    result_value = "..."
                 result_table.add_row([plugin_name, v["display"], status, result_value.strip()])
+                html_template_data[plugin_name] = v
 
             # 添加攻击链节点
             if status == "Success":
@@ -209,15 +210,22 @@ class Output(BaseScreen):
             if status == "Failed":
                 total["f_count"] += 1
 
-            if status == "Error":
-                total["e_count"] += 1
-
         output.success(f"script results{output.RESET}\n"
                        f"{result_table}\n")
 
-        # TODO 打印html输出结果路径
-        # TODO scan打印结果过多就精简
-        # TODO exploit 扫描结果着重标记（分割）
+        # Load the HTML template using Jinja2
+        templateLoader = jinja2.FileSystemLoader(searchpath="./utils/template")
+        templateEnv = jinja2.Environment(loader=templateLoader)
+        template = templateEnv.get_template("temp.html")
+
+        # Render the template with the data
+        outputText = template.render(data=html_template_data)
+
+        # Print the final HTML code
+        with open(f"result/{self.save}", "w") as f:
+            f.write(outputText)
+
+        output.success(f"details are saved to result/{self.save}")
 
         if scan_type == AllPluginTypes.Exploit:
             self.info("Attack chains:")

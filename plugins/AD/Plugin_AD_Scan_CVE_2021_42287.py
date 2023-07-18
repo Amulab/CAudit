@@ -1,8 +1,6 @@
 import urllib3
 
 from utils import output
-
-urllib3.disable_warnings()
 import datetime
 import random
 import struct
@@ -24,6 +22,7 @@ from impacket.winregistry import hexdump
 from plugins.AD import PluginADScanBase
 from utils.consts import AllPluginTypes
 
+urllib3.disable_warnings()
 
 class PluginADNoPac(PluginADScanBase):
     """
@@ -41,7 +40,7 @@ class PluginADNoPac(PluginADScanBase):
         try:
             dumper = S4U2SELF(self.ldap_username, self.ldap_username, self.ldap_user_password,
                               self.dc_domain, dc_ip=self.dc_ip)
-            # dumper.dump()
+            dumper.dump()
             self.result = dumper.result
         except Exception as e:
             if 'KRB_AP_ERR_BAD_INTEGRITY' in str(e):
@@ -85,7 +84,7 @@ class S4U2SELF:
         for bufferN in range(pacType['cBuffers']):
             infoBuffer = PAC_INFO_BUFFER(buff)
             data = pacType['Buffers'][infoBuffer['Offset'] - 8:][:infoBuffer['cbBufferSize']]
-            output.debug("TYPE 0x%x" % infoBuffer['ulType'])
+            # output.debug("TYPE 0x%x" % infoBuffer['ulType'])
             if infoBuffer['ulType'] == 1:
                 type1 = TypeSerialization1(data)
                 # I'm skipping here 4 bytes with its the ReferentID for the pointer
@@ -109,14 +108,14 @@ class S4U2SELF:
             elif infoBuffer['ulType'] == PAC_UPN_DNS_INFO:
                 upn = UPN_DNS_INFO(data)
                 # upn.dump()
-                output.debug(data[upn['DnsDomainNameOffset']:])
+                # output.debug(data[upn['DnsDomainNameOffset']:])
             elif infoBuffer['ulType'] == 0x10:
                 self.result['status'] = 0
                 self.result['data'] = {}
                 return False
             else:
                 hexdump(data)
-            output.debug("#" * 80)
+            # output.debug("#" * 80)
 
             buff = buff[len(infoBuffer):]
 
@@ -156,8 +155,8 @@ class S4U2SELF:
         authenticator['cusec'] = now.microsecond
         authenticator['ctime'] = KerberosTime.to_asn1(now)
 
-        output.debug('AUTHENTICATOR')
-        output.debug(authenticator.prettyPrint())
+        # output.debug('AUTHENTICATOR')
+        # output.debug(authenticator.prettyPrint())
 
         encodedAuthenticator = encoder.encode(authenticator)
 
@@ -189,9 +188,8 @@ class S4U2SELF:
         clientName = Principal(self.__behalfUser, type=constants.PrincipalNameType.NT_PRINCIPAL.value)
 
         S4UByteArray = struct.pack('<I', constants.PrincipalNameType.NT_PRINCIPAL.value)
-        #S4UByteArray += b(self.__behalfUser) + b(self.__domain) + b'Kerberos'
+        # S4UByteArray += b(self.__behalfUser) + b(self.__domain) + b'Kerberos'
         S4UByteArray += self.__behalfUser.encode('utf-8') + self.__domain.encode('utf-8') + b'Kerberos'
-
 
         # Finally cksum is computed by calling the KERB_CHECKSUM_HMAC_MD5 hash
         # with the following three parameters: the session key of the TGT of
@@ -207,8 +205,8 @@ class S4U2SELF:
         paForUserEnc['cksum']['checksum'] = checkSum
         paForUserEnc['auth-package'] = 'Kerberos'
 
-        output.debug('PA_FOR_USER_ENC')
-        output.debug(paForUserEnc.prettyPrint())
+        # output.debug('PA_FOR_USER_ENC')
+        # output.debug(paForUserEnc.prettyPrint())
 
         encodedPaForUserEnc = encoder.encode(paForUserEnc)
 
@@ -244,8 +242,8 @@ class S4U2SELF:
         myTicket = ticket.to_asn1(TicketAsn1())
         seq_set_iter(reqBody, 'additional-tickets', (myTicket,))
 
-        output.debug('Final TGS')
-        output.debug(tgsReq.prettyPrint())
+        # output.debug('Final TGS')
+        # output.debug(tgsReq.prettyPrint())
 
         message = encoder.encode(tgsReq)
 
@@ -253,8 +251,8 @@ class S4U2SELF:
 
         tgs = decoder.decode(r, asn1Spec=TGS_REP())[0]
 
-        output.debug('TGS_REP')
-        output.debug(tgs.prettyPrint())
+        # output.debug('TGS_REP')
+        # output.debug(tgs.prettyPrint())
 
         cipherText = tgs['ticket']['enc-part']['cipher']
 

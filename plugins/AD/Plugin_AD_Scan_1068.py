@@ -81,7 +81,7 @@ class PluginADLowPwdComple(PluginADScanBase):
         #     instance = {}
         #     instance["Status"] = "密码必须符合复杂性要求策略未开启"
         #     instance_list.append(instance)
-            output.debug('Next iteration with %d folders.' % len(next_dirs))
+        #     output.debug('Next iteration with %d folders.' % len(next_dirs))
 
 
 
@@ -122,8 +122,5 @@ class PluginADLowPwdComple(PluginADScanBase):
         else:
             output.debug("SMBv3.0 dialect used")
         smbClient.login(username, password, domain, lmhash, nthash)
-        if smbClient.isGuestSession() > 0:
-            output.debug("GUEST Session Granted")
-        else:
-            output.debug("USER Session Granted")
+
         return smbClient

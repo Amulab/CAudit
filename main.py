@@ -18,6 +18,7 @@ def load_module_param(mod_name, exploit_plugin_name, all_module_plugins):
     subparser = parser.add_subparsers(dest="sub_mode")
 
     parser.add_argument("--thread", help="set thread. default=5", required=False, default=5, type=int, dest="thread")
+    parser.add_argument("--save", help="save result to file. default=results.html", required=False, default="results.html",dest="save")
 
     # 加载模块参数
     modules = get_plugin_type()
@@ -108,6 +109,9 @@ if __name__ == '__main__':
     # 加载模块参数
     exploit_plugin_name = utils.get_user_exploit_input()
     user_args = load_module_param(m_name, exploit_plugin_name, p_list)
+
+    output.save = user_args.save
+    output.info(f"set the result is saved to {output.save}")
 
     if user_args.scan_type is None:
         output.print_simple_help(user_args.sub_mode)
