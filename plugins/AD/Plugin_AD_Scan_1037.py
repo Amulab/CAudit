@@ -45,7 +45,6 @@ class PluginADPrivilageAccountNumberGT50(PluginADScanBase):
             aq.append(ss)
 
         for entry in entry_generator:
-            print(entry)
             if entry["type"] != "searchResEntry":
                 continue
             instance = {}
