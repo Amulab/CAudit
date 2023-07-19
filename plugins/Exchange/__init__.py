@@ -2,6 +2,7 @@ import argparse
 import sys
 from argparse import ArgumentParser
 
+from modules.adi_lib.plugin.base import BaseSearch
 from plugins import PluginBase
 from utils.consts import AllPluginTypes
 from utils.logger import output
@@ -26,6 +27,16 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
     # VCenter-scan 模块
     ad_sub_mode = parser.add_subparsers(dest="scan_type")
     scan_mode = ad_sub_mode.add_parser("scan", formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    scan_mode_group = scan_mode.add_mutually_exclusive_group(required=True)
+    scan_mode_group.add_argument("--all", help="select all plugins", action=argparse.BooleanOptionalAction, dest="all")
+    scan_mode_group.add_argument("--plugin", help="select one or more plugin (E.G. plugin name1, plugin name 2...)",
+                                 nargs="+", dest="plugins")
+    scan_mode.add_argument("-u", "--username", required=False, default=None, dest="username")
+    scan_mode.add_argument("-p", "--password", required=False, default=None, dest="password")
+    scan_mode.add_argument("-d", "--domain", help="Domain FQDN(dc.test.lab)", required=True, default=None,
+                           dest="domain_fqdn")
+    scan_mode.add_argument("--dc-ip", required=False, default=None, dest="domain_ip")
 
     # scan_mode_group = scan_mode.add_mutually_exclusive_group(required=True)
     # scan_mode_group.add_argument("--all", help="select all plugins", action=argparse.BooleanOptionalAction, dest="all")
@@ -57,8 +68,45 @@ def enrollment_parameters(parser: ArgumentParser, all_plugins: dict[str, PluginB
 
 class PluginExchangeBase(PluginBase):
     """
-    VCenter 插件基础类
+    Exchange 插件漏洞扫描基础类
     """
 
     def __init__(self):
         super().__init__()
+
+
+class PluginExchangeScanBase(PluginBase, BaseSearch):
+    """
+    Exchange 扫描插件基础类
+    """
+
+    def __init__(self, *args, **kwargs):
+        uarg = args[0]
+
+        _fqdn: list = uarg.domain_fqdn.split(".")
+        _base_dn = f"dc={_fqdn[-2]},dc={_fqdn[-1]}"
+
+        if len(_fqdn) != 3:
+            output.error("domain fqdn input error.")
+
+        dc_conf = {
+            "ldap_conf": {
+                "dn": _base_dn,
+                "password": uarg.password,
+                "user": f"{uarg.username}@{'.'.join(_fqdn[-2:])}",
+                "DNS": "",
+                "server": f"ldap://{'.'.join(args[0].domain_fqdn.split('.'))}"
+            },
+            "name": '.'.join(_fqdn[-2:]),
+            "ip": uarg.domain_ip,
+            "hostname": _fqdn[0],
+            "fqdn": '.'.join(args[0].domain_fqdn.split(".")),
+            "platform": ""
+        }
+
+        meta_data = {
+
+        }
+        env = {}
+
+        super(BaseSearch, self).__init__(dc_conf, meta_data, env)

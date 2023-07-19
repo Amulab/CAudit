@@ -20,7 +20,7 @@ module_base_class = {
     "AD": ["PluginADScanBase", "PluginAdExploitBase"],
     "VCenter": ["PluginVCenterBase", "PluginVCenterScanBase"],
     "Kubernetes": ["PluginKubernetesBase"],
-    "Exchange": ["PluginExchangeBase"],
+    "Exchange": ["PluginExchangeScanBase", "PluginExchangeBase"],
     "JumpServer": ["PluginJumpServerBase"],
     "Qz": ["PluginQizhiBase"],
     "Zabbix": ["PluginZabbixBase"],
