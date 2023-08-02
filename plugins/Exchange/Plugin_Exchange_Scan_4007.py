@@ -43,7 +43,6 @@ class PluginExchangeNoConfigueFilter(PluginExchangeScanBase):
                                                                               paged_size=1000,
                                                                               generator=True)
             for entry2 in entry_generator2:
-
                 if entry2["attributes"]['msExchAgentsFlags'] & int("0b0001", 2) == 0:
                     result['status'] = 1
                     instance ={}
