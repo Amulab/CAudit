@@ -6,4 +6,4 @@ COPY . .
 RUN python3 -m pip install -r requirements.txt
 
 USER root
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "CAduit.py"]
