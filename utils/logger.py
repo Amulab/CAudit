@@ -1,4 +1,5 @@
 import logging
+import os.path
 
 import colorama
 import colorlog
@@ -235,6 +236,9 @@ class Output(BaseScreen):
         outputText = template.render(data=html_template_data)
 
         # Print the final HTML code
+        if not os.path.exists("result"):
+            os.makedirs("result")
+
         with open(f"result/{self.save}", "w") as f:
             f.write(outputText)
 
