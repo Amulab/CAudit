@@ -67,7 +67,10 @@ class PluginADScanBase(PluginBase, BaseSearch):
         uarg = args[0]
 
         _fqdn: list = uarg.domain_fqdn.split(".")
-        _base_dn = f"dc={_fqdn[-2]},dc={_fqdn[-1]}"
+        _fqdn = _fqdn[1:] # skip domain controller hostname
+        #_base_dn = f"dc={_fqdn[-2]},dc={_fqdn[-1]}"
+        _base_dn = ",dc=".join(_fqdn)
+        _base_dn = "dc=" + _base_dn
 
         if len(_fqdn) != 3:
             output.error("domain fqdn input error.")
