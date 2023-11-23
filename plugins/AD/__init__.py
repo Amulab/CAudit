@@ -72,9 +72,6 @@ class PluginADScanBase(PluginBase, BaseSearch):
         _base_dn = ",dc=".join(_fqdn)
         _base_dn = "dc=" + _base_dn
 
-        if len(_fqdn) != 3:
-            output.error("domain fqdn input error.")
-
         dc_conf = {
             "ldap_conf": {
                 "dn": _base_dn,
